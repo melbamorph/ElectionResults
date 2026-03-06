@@ -6,9 +6,11 @@ import { ElectionSection } from './ElectionSection';
 import { RaceCard } from './RaceCard';
 
 function buildRace(overrides: Partial<NormalizedRace> & Pick<NormalizedRace, 'race'>): NormalizedRace {
+  const { race, ...rest } = overrides;
+
   return {
     election: 'CITY',
-    race: overrides.race,
+    race,
     raceType: 'office',
     scope: 'CITYWIDE',
     ward: 'ALL',
@@ -18,7 +20,7 @@ function buildRace(overrides: Partial<NormalizedRace> & Pick<NormalizedRace, 'ra
     totalVotes: 0,
     candidates: [],
     wardBreakdown: [],
-    ...overrides,
+    ...rest,
   };
 }
 
