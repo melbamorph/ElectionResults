@@ -1,5 +1,9 @@
 export type CsvObject = Record<string, string>;
 
+function normalizeHeader(header: string): string {
+  return header.replace(/^\uFEFF/, '').trim().toLowerCase();
+}
+
 export function parseCsv(text: string): string[][] {
   const rows: string[][] = [];
   let row: string[] = [];
@@ -58,8 +62,9 @@ export function parseCsvObjects(text: string, requiredHeaders: string[]): CsvObj
     throw new Error('CSV file is empty.');
   }
 
-  const headers = rows[0].map((header) => header.trim());
-  const missing = requiredHeaders.filter((header) => !headers.includes(header));
+  const headers = rows[0].map((header) => normalizeHeader(header));
+  const normalizedRequiredHeaders = requiredHeaders.map((header) => normalizeHeader(header));
+  const missing = normalizedRequiredHeaders.filter((header) => !headers.includes(header));
 
   if (missing.length > 0) {
     throw new Error(`CSV missing required headers: ${missing.join(', ')}`);
