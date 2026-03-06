@@ -62,15 +62,20 @@ export function parseCsvObjects(text: string, requiredHeaders: string[]): CsvObj
     throw new Error('CSV file is empty.');
   }
 
-  const headers = rows[0].map((header) => normalizeHeader(header));
   const normalizedRequiredHeaders = requiredHeaders.map((header) => normalizeHeader(header));
+  const headerIndex = rows.findIndex((row) => {
+    const headers = row.map((header) => normalizeHeader(header));
+    return normalizedRequiredHeaders.every((requiredHeader) => headers.includes(requiredHeader));
+  });
+
+  const headers = (headerIndex >= 0 ? rows[headerIndex] : rows[0]).map((header) => normalizeHeader(header));
   const missing = normalizedRequiredHeaders.filter((header) => !headers.includes(header));
 
   if (missing.length > 0) {
     throw new Error(`CSV missing required headers: ${missing.join(', ')}`);
   }
 
-  return rows.slice(1).map((cells) => {
+  return rows.slice(headerIndex + 1).map((cells) => {
     const record: CsvObject = {};
     headers.forEach((header, index) => {
       record[header] = (cells[index] || '').trim();

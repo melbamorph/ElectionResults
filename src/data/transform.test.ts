@@ -53,6 +53,17 @@ describe('CSV parsing and normalization', () => {
     expect(() => parseResultsCsv(invalid)).toThrow(/missing required headers/i);
   });
 
+
+  it('accepts CSV with preamble rows before the header', () => {
+    const withPreamble = `Generated at,2026-01-01
+Notes,Unofficial
+election,race,ward,candidate,votes
+CITY,Race,ALL,Name,10`;
+    const parsed = parseResultsCsv(withPreamble);
+    expect(parsed).toHaveLength(1);
+    expect(parsed[0]).toMatchObject({ election: 'CITY', race: 'Race', ward: 'ALL', candidate: 'Name', votes: 10 });
+  });
+
   it('computes winners, turnout, and ward reporting metrics', () => {
     const data = normalizeDashboardData({
       results: parseResultsCsv(resultsCsv),
