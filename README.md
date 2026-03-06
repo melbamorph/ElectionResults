@@ -42,7 +42,7 @@ Publish each tab to CSV from Google Sheets and set these env vars:
 
 Optional security env vars:
 
-- `VITE_ALLOWED_CSV_HOSTS` (default: `docs.google.com,docs.googleusercontent.com`)
+- `VITE_ALLOWED_CSV_HOSTS` (default: `docs.google.com,googleusercontent.com`)
 - `VITE_ALLOW_ANY_CSV_HOST` (default: `false`; set to `true` only for trusted non-Google hosts)
 
 ### Required CSV Schemas
@@ -178,3 +178,4 @@ Use them as operational entry templates for election staff.
 ## 8. GitHub Hardening Checklist
 
 See `docs/GITHUB_SETUP.md` for the exact repository settings and election-night validation checklist.
+
