@@ -4,7 +4,7 @@ function normalizeHeader(header: string): string {
   return header.replace(/^\uFEFF/, '').trim().toLowerCase();
 }
 
-export function parseCsv(text: string): string[][] {
+export function parseCsv(text: string, delimiter = ','): string[][] {
   const rows: string[][] = [];
   let row: string[] = [];
   let value = '';
@@ -24,7 +24,7 @@ export function parseCsv(text: string): string[][] {
       continue;
     }
 
-    if (!inQuotes && ch === ',') {
+    if (!inQuotes && ch === delimiter) {
       row.push(value.trim());
       value = '';
       continue;
@@ -56,21 +56,52 @@ export function parseCsv(text: string): string[][] {
   return rows;
 }
 
+function findHeaderRowIndex(rows: string[][], requiredHeaders: string[]): number {
+  return rows.findIndex((row) => {
+    const headers = row.map((header) => normalizeHeader(header));
+    return requiredHeaders.every((requiredHeader) => headers.includes(requiredHeader));
+  });
+}
+
 export function parseCsvObjects(text: string, requiredHeaders: string[]): CsvObject[] {
-  const rows = parseCsv(text);
-  if (rows.length === 0) {
+  const normalizedRequiredHeaders = requiredHeaders.map((header) => normalizeHeader(header));
+  const candidateDelimiters = [',', ';', '\t'];
+
+  let selectedRows: string[][] = [];
+  let headerIndex = -1;
+
+  for (const delimiter of candidateDelimiters) {
+    const rows = parseCsv(text, delimiter);
+    if (rows.length === 0) {
+      continue;
+    }
+
+    const currentHeaderIndex = findHeaderRowIndex(rows, normalizedRequiredHeaders);
+    if (currentHeaderIndex >= 0) {
+      selectedRows = rows;
+      headerIndex = currentHeaderIndex;
+      break;
+    }
+
+    if (selectedRows.length === 0) {
+      selectedRows = rows;
+    }
+  }
+
+  if (selectedRows.length === 0) {
     throw new Error('CSV file is empty.');
   }
 
-  const headers = rows[0].map((header) => normalizeHeader(header));
-  const normalizedRequiredHeaders = requiredHeaders.map((header) => normalizeHeader(header));
+  const headers = (headerIndex >= 0 ? selectedRows[headerIndex] : selectedRows[0]).map((header) =>
+    normalizeHeader(header),
+  );
   const missing = normalizedRequiredHeaders.filter((header) => !headers.includes(header));
 
   if (missing.length > 0) {
     throw new Error(`CSV missing required headers: ${missing.join(', ')}`);
   }
 
-  return rows.slice(1).map((cells) => {
+  return selectedRows.slice(headerIndex + 1).map((cells) => {
     const record: CsvObject = {};
     headers.forEach((header, index) => {
       record[header] = (cells[index] || '').trim();
