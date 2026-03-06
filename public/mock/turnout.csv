@@ -1,0 +1,6 @@
+election,ward,ballots_counted,registered_voters
+CITY,1,745,2700
+CITY,2,690,2600
+CITY,3,699,3120
+CITY,ALL,2134,8420
+SCHOOL,ALL,2200,8600

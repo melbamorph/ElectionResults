@@ -1,0 +1,11 @@
+Here are the published links for each tab in the Google sheet: 
+
+results: https://docs.google.com/spreadsheets/d/e/2PACX-1vTiTShKuie7qb0QGHhp8gVGGvHZ5z6zys8V09p4B7a6O28XB92RPVC-LDuLdeelfWoEcZymBnTcAwTa/pubhtml?gid=812163918&single=true&output=csv
+
+ward_status: https://docs.google.com/spreadsheets/d/e/2PACX-1vTiTShKuie7qb0QGHhp8gVGGvHZ5z6zys8V09p4B7a6O28XB92RPVC-LDuLdeelfWoEcZymBnTcAwTa/pubhtml?gid=1912123943&single=true&output=csv
+
+election_status: https://docs.google.com/spreadsheets/d/e/2PACX-1vTiTShKuie7qb0QGHhp8gVGGvHZ5z6zys8V09p4B7a6O28XB92RPVC-LDuLdeelfWoEcZymBnTcAwTa/pubhtml?gid=568039235&single=true&output=csv
+
+turnout: https://docs.google.com/spreadsheets/d/e/2PACX-1vTiTShKuie7qb0QGHhp8gVGGvHZ5z6zys8V09p4B7a6O28XB92RPVC-LDuLdeelfWoEcZymBnTcAwTa/pubhtml?gid=1996843588&single=true&output=csv
+
+race_config: https://docs.google.com/spreadsheets/d/e/2PACX-1vTiTShKuie7qb0QGHhp8gVGGvHZ5z6zys8V09p4B7a6O28XB92RPVC-LDuLdeelfWoEcZymBnTcAwTa/pubhtml?gid=1540801958&single=true&output=csv
