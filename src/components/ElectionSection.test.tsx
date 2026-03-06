@@ -1,9 +1,26 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, within } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import { appTheme } from '../theme';
-import { ElectionSectionData } from '../types';
+import { ElectionSectionData, NormalizedRace } from '../types';
 import { ElectionSection } from './ElectionSection';
 import { RaceCard } from './RaceCard';
+
+function buildRace(overrides: Partial<NormalizedRace> & Pick<NormalizedRace, 'race'>): NormalizedRace {
+  return {
+    election: 'CITY',
+    race: overrides.race,
+    raceType: 'office',
+    scope: 'CITYWIDE',
+    ward: 'ALL',
+    seats: 1,
+    sortOrder: 1,
+    showInKeyRaces: true,
+    totalVotes: 0,
+    candidates: [],
+    wardBreakdown: [],
+    ...overrides,
+  };
+}
 
 const citySection: ElectionSectionData = {
   id: 'CITY',
@@ -64,6 +81,50 @@ describe('ElectionSection', () => {
 
     rerender(<ElectionSection section={schoolSection} wardStatuses={wards} />);
     expect(screen.queryByText(/Ward Reporting Status/i)).not.toBeInTheDocument();
+  });
+
+  it('groups library trustees with councilors at large and hides duplicate all-offices block', () => {
+    const ward = buildRace({ race: 'Ward Councilor Ward 1', scope: 'WARD', ward: '1', sortOrder: 1 });
+    const atLarge = buildRace({ race: 'City Councilor At Large', sortOrder: 2, seats: 2 });
+    const library = buildRace({
+      race: 'Library Trustees',
+      sortOrder: 3,
+      seats: 3,
+      showInKeyRaces: false,
+    });
+    const ballot = buildRace({
+      race: 'Question Number One',
+      raceType: 'ballot',
+      sortOrder: 4,
+      showInKeyRaces: false,
+    });
+
+    const section: ElectionSectionData = {
+      id: 'CITY',
+      title: appTheme.citySectionTitle,
+      status: 'REPORTED',
+      keyRaces: [ward, atLarge],
+      offices: [library],
+      ballots: [ballot],
+      races: [ward, atLarge, library, ballot],
+    };
+
+    render(<ElectionSection section={section} wardStatuses={[]} />);
+
+    const atLargeGroup = screen.getByRole('heading', {
+      name: /Councilors At Large & Library Trustees/i,
+    });
+    expect(atLargeGroup).toBeInTheDocument();
+
+    const groupContainer = atLargeGroup.closest('section');
+    expect(groupContainer).not.toBeNull();
+    if (groupContainer) {
+      expect(within(groupContainer).getByText('City Councilor At Large')).toBeInTheDocument();
+      expect(within(groupContainer).getByText('Library Trustees')).toBeInTheDocument();
+    }
+
+    expect(screen.queryByRole('heading', { name: /^All Offices$/i })).not.toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: /^Ballot Questions$/i })).toBeInTheDocument();
   });
 });
 

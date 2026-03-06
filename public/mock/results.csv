@@ -1,31 +1,33 @@
 election,race,ward,candidate,votes
-CITY,Ward Councilor Ward 1,1,Andrew Faunce,120
-CITY,Ward Councilor Ward 1,1,Jamie Stone,95
-CITY,Ward Councilor Ward 2,2,Eric Cole,98
-CITY,Ward Councilor Ward 2,2,George Sykes,110
-CITY,Ward Councilor Ward 3,3,Lori Key,140
-CITY,City Councilor At Large,ALL,Paul Roberts,340
-CITY,City Councilor At Large,ALL,Ronald Smith,325
-CITY,City Councilor At Large,ALL,Kellen Appleton,280
-CITY,City Councilor At Large,ALL,Cory Grant,250
-CITY,City Councilor At Large,ALL,Timothy J. McNamara,175
-CITY,Library Trustees,ALL,Francis Oscadal,410
-CITY,Library Trustees,ALL,Kim Rheinlander,395
-CITY,Library Trustees,ALL,Ann Sharfstein,370
-CITY,Keno Question,ALL,Yes,420
-CITY,Keno Question,ALL,No,300
-CITY,Social District Question,ALL,Yes,390
-CITY,Social District Question,ALL,No,325
-CITY,Zoning Amendment #1,ALL,Yes,360
-CITY,Zoning Amendment #1,ALL,No,350
-SCHOOL,School Board,ALL,Candy Hammond,410
-SCHOOL,School Board,ALL,Travis Talbert,398
-SCHOOL,School Board,ALL,Tia Winter,372
-SCHOOL,School Board,ALL,Alex Field,280
-SCHOOL,School District Moderator,ALL,Gary R. Mayo,420
-SCHOOL,School District Clerk,ALL,Casey Long,415
-SCHOOL,School District Treasurer,ALL,Jordan Pike,405
-SCHOOL,Operating Budget,ALL,Yes,500
-SCHOOL,Operating Budget,ALL,No,300
-SCHOOL,Support Staff Agreement,ALL,Yes,470
-SCHOOL,Support Staff Agreement,ALL,No,315
+CITY,Ward Councilor Ward 1,1,Luke T. Skywalker,120
+CITY,Ward Councilor Ward 1,1,Leia M. Organa,95
+CITY,Ward Councilor Ward 2,2,Han R. Solo,98
+CITY,Ward Councilor Ward 2,2,Obi-Wan J. Kenobi,110
+CITY,Ward Councilor Ward 3,3,Darth V. Vader,140
+CITY,City Councilor At Large,ALL,Padme N. Amidala,340
+CITY,City Councilor At Large,ALL,Yoda M. Jedi,325
+CITY,City Councilor At Large,ALL,Chewbacca R. Wookiee,280
+CITY,City Councilor At Large,ALL,Lando C. Calrissian,250
+CITY,City Councilor At Large,ALL,Sheev P. Palpatine,175
+CITY,Library Trustees,ALL,Jabba T. Hutt,410
+CITY,Library Trustees,ALL,Jar Jar B. Binks,395
+CITY,Library Trustees,ALL,C-3PO D. Droid,370
+CITY,Question Number One,ALL,Yes,420
+CITY,Question Number One,ALL,No,300
+CITY,Question Number Two,ALL,Yes,390
+CITY,Question Number Two,ALL,No,325
+CITY,Question Number Three,ALL,Yes,360
+CITY,Question Number Three,ALL,No,350
+SCHOOL,School Board,ALL,R2-D2 A. Astromech,410
+SCHOOL,School Board,ALL,Boba F. Fett,398
+SCHOOL,School Board,ALL,Grogu B. Child,372
+SCHOOL,School Board,ALL,Luke T. Skywalker,280
+SCHOOL,School District Moderator,ALL,Leia M. Organa,420
+SCHOOL,School District Clerk,ALL,Han R. Solo,415
+SCHOOL,School District Treasurer,ALL,Obi-Wan J. Kenobi,405
+SCHOOL,Warrant Number One,ALL,Yes,500
+SCHOOL,Warrant Number One,ALL,No,300
+SCHOOL,Warrant Number Two,ALL,Yes,470
+SCHOOL,Warrant Number Two,ALL,No,315
+
+

@@ -1,24 +1,26 @@
 election,race,ward,candidate,votes
-CITY,Ward Councilor Ward 1,1,Andrew Faunce,0
-CITY,Ward Councilor Ward 2,2,Eric Cole,0
-CITY,Ward Councilor Ward 2,2,George Sykes,0
-CITY,Ward Councilor Ward 3,3,Lori Key,0
-CITY,City Councilor At Large,ALL,Paul Roberts,0
-CITY,City Councilor At Large,ALL,Ronald Smith,0
-CITY,City Councilor At Large,ALL,Kellen Appleton,0
-CITY,City Councilor At Large,ALL,Cory Grant,0
-CITY,City Councilor At Large,ALL,Timothy J. McNamara,0
-CITY,Library Trustees,ALL,Francis Oscadal,0
-CITY,Library Trustees,ALL,Kim Rheinlander,0
-CITY,Library Trustees,ALL,Ann Sharfstein,0
-CITY,Keno Question,ALL,Yes,0
-CITY,Social District Question,ALL,Yes,0
-CITY,Zoning Amendment #1,ALL,Yes,0
-SCHOOL,School Board,ALL,Candy Hammond,0
-SCHOOL,School Board,ALL,Travis Talbert,0
-SCHOOL,School Board,ALL,Tia Winter,0
-SCHOOL,School District Moderator,ALL,Gary R. Mayo,0
-SCHOOL,Operating Budget,ALL,Yes,0
-SCHOOL,Operating Budget,ALL,No,0
-SCHOOL,Support Staff Agreement,ALL,Yes,0
-SCHOOL,Support Staff Agreement,ALL,No,0
+CITY,Ward Councilor Ward 1,1,Luke T. Skywalker,0
+CITY,Ward Councilor Ward 2,2,Han R. Solo,0
+CITY,Ward Councilor Ward 2,2,Obi-Wan J. Kenobi,0
+CITY,Ward Councilor Ward 3,3,Darth V. Vader,0
+CITY,City Councilor At Large,ALL,Padme N. Amidala,0
+CITY,City Councilor At Large,ALL,Yoda M. Jedi,0
+CITY,City Councilor At Large,ALL,Chewbacca R. Wookiee,0
+CITY,City Councilor At Large,ALL,Lando C. Calrissian,0
+CITY,City Councilor At Large,ALL,Sheev P. Palpatine,0
+CITY,Library Trustees,ALL,Jabba T. Hutt,0
+CITY,Library Trustees,ALL,Jar Jar B. Binks,0
+CITY,Library Trustees,ALL,C-3PO D. Droid,0
+CITY,Question Number One,ALL,Yes,0
+CITY,Question Number Two,ALL,Yes,0
+CITY,Question Number Three,ALL,Yes,0
+SCHOOL,School Board,ALL,R2-D2 A. Astromech,0
+SCHOOL,School Board,ALL,Boba F. Fett,0
+SCHOOL,School Board,ALL,Grogu B. Child,0
+SCHOOL,School District Moderator,ALL,Leia M. Organa,0
+SCHOOL,Warrant Number One,ALL,Yes,0
+SCHOOL,Warrant Number One,ALL,No,0
+SCHOOL,Warrant Number Two,ALL,Yes,0
+SCHOOL,Warrant Number Two,ALL,No,0
+
+
