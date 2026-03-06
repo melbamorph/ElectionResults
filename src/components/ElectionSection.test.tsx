@@ -6,9 +6,11 @@ import { ElectionSection } from './ElectionSection';
 import { RaceCard } from './RaceCard';
 
 function buildRace(overrides: Partial<NormalizedRace> & Pick<NormalizedRace, 'race'>): NormalizedRace {
+  const { race, ...rest } = overrides;
+
   return {
     election: 'CITY',
-    race: overrides.race,
+    race,
     raceType: 'office',
     scope: 'CITYWIDE',
     ward: 'ALL',
@@ -18,7 +20,7 @@ function buildRace(overrides: Partial<NormalizedRace> & Pick<NormalizedRace, 'ra
     totalVotes: 0,
     candidates: [],
     wardBreakdown: [],
-    ...overrides,
+    ...rest,
   };
 }
 
@@ -112,7 +114,7 @@ describe('ElectionSection', () => {
     render(<ElectionSection section={section} wardStatuses={[]} />);
 
     const atLargeGroup = screen.getByRole('heading', {
-      name: /Councilors At Large & Library Trustees/i,
+      name: /Councilors At[- ]Large (?:&|and) Library Trustees/i,
     });
     expect(atLargeGroup).toBeInTheDocument();
 
@@ -142,3 +144,4 @@ describe('RaceCard', () => {
     expect(screen.queryByText(/Total votes: 215/i)).not.toBeInTheDocument();
   });
 });
+
