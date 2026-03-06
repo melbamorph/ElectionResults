@@ -173,13 +173,11 @@ Current test coverage includes:
 - Ward tracker and ward-breakdown UI behavior
 - Auto-refresh polling behavior and stale-data fallback
 
-## 7. Existing Sheet Templates
+## 7. Sample CSV Templates
 
-Your original source templates remain in:
+Local/offline sample CSV files are in:
 
-- `Google Sheet/`
-
-Use them as operational entry templates for election staff.
+- `public/mock/`
 
 ## 8. GitHub Hardening Checklist
 
