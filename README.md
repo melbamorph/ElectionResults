@@ -1,6 +1,6 @@
-# Lebanon Election Results Dashboard
+# Election Results Dashboard
 
-Static municipal election-night dashboard for the City of Lebanon, New Hampshire.
+Static municipal election-night dashboard with fictional default branding for demo and template use.
 
 - Frontend only: React + Vite + Tailwind CSS
 - Data source: published Google Sheets CSV tabs
@@ -22,7 +22,13 @@ npm install
 cp .env.example .env
 ```
 
-4. Start local dev server:
+4. Set your dashboard location theme in `.env` (optional):
+
+```bash
+VITE_THEME_LOCATION=City of Mos Eisley, Tatooine
+```
+
+5. Start local dev server:
 
 ```bash
 npm run dev
@@ -178,4 +184,3 @@ Use them as operational entry templates for election staff.
 ## 8. GitHub Hardening Checklist
 
 See `docs/GITHUB_SETUP.md` for the exact repository settings and election-night validation checklist.
-

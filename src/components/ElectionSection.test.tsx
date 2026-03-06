@@ -1,12 +1,13 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
+import { appTheme } from '../theme';
 import { ElectionSectionData } from '../types';
 import { ElectionSection } from './ElectionSection';
 import { RaceCard } from './RaceCard';
 
 const citySection: ElectionSectionData = {
   id: 'CITY',
-  title: 'City of Lebanon Municipal Election',
+  title: appTheme.citySectionTitle,
   status: 'REPORTED',
   keyRaces: [
     {
@@ -42,7 +43,7 @@ const citySection: ElectionSectionData = {
 
 const schoolSection: ElectionSectionData = {
   id: 'SCHOOL',
-  title: 'Lebanon School District Election',
+  title: appTheme.schoolSectionTitle,
   status: 'PENDING',
   keyRaces: [],
   offices: [],

@@ -14,6 +14,7 @@ import {
   WardBreakdownRow,
   WardStatusRow,
 } from '../types';
+import { appTheme } from '../theme';
 import { parseBoolSafe, parseCsvObjects, parseIntSafe } from './csv';
 
 const VALID_ELECTIONS: ElectionId[] = ['CITY', 'SCHOOL'];
@@ -276,7 +277,7 @@ function buildElectionSection(
 
   return {
     id,
-    title: id === 'CITY' ? 'City of Lebanon Municipal Election' : 'Lebanon School District Election',
+    title: id === 'CITY' ? appTheme.citySectionTitle : appTheme.schoolSectionTitle,
     status: electionStatus,
     keyRaces: races.filter((race) => race.showInKeyRaces),
     offices: races.filter((race) => race.raceType === 'office' && !race.showInKeyRaces),

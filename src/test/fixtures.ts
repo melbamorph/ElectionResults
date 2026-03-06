@@ -1,10 +1,11 @@
+import { appTheme } from '../theme';
 import { DashboardData } from '../types';
 
 export const dashboardFixture: DashboardData = {
   sections: {
     CITY: {
       id: 'CITY',
-      title: 'City of Lebanon Municipal Election',
+      title: appTheme.citySectionTitle,
       status: 'REPORTED',
       keyRaces: [
         {
@@ -31,7 +32,7 @@ export const dashboardFixture: DashboardData = {
     },
     SCHOOL: {
       id: 'SCHOOL',
-      title: 'Lebanon School District Election',
+      title: appTheme.schoolSectionTitle,
       status: 'PENDING',
       keyRaces: [],
       offices: [],
