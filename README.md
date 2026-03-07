@@ -80,7 +80,7 @@ election,ward,ballots_counted,registered_voters
 `race_config.csv`
 
 ```csv
-election,race,race_type,scope,ward,seats,sort_order,show_in_key_races,enabled
+election,race,race_type,race_group,scope,ward,seats,sort_order,show_in_key_races,enabled
 ```
 
 ### Status Values
@@ -93,6 +93,7 @@ election,race,race_type,scope,ward,seats,sort_order,show_in_key_races,enabled
 ### Notes
 
 - `race_config.csv` is authoritative for race order, race type, seat count, and key-race flags.
+- `race_group` is optional. Use it to create sub-groups inside the two main containers (`Elected Positions` and `Ballot Questions`), such as `Democratic Ballot` and `Republican Ballot`.
 - CITY turnout summary uses ward rows (`1`, `2`, `3`) and ignores CITY `ALL` when ward rows are present.
 - School races are citywide only and do not display ward breakdowns.
 

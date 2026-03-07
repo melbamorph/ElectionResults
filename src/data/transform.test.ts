@@ -40,11 +40,11 @@ CITY,ALL,2134,8420
 SCHOOL,ALL,2200,8600
 `;
 
-const raceConfigCsv = `election,race,race_type,scope,ward,seats,sort_order,show_in_key_races,enabled
-CITY,City Councilor At Large,office,CITYWIDE,ALL,2,1,TRUE,TRUE
-CITY,Ward Councilor Ward 1,office,WARD,1,1,2,TRUE,TRUE
-CITY,Ward Councilor Ward 2,office,WARD,2,1,3,FALSE,TRUE
-SCHOOL,School Board,office,CITYWIDE,ALL,3,1,TRUE,TRUE
+const raceConfigCsv = `election,race,race_type,race_group,scope,ward,seats,sort_order,show_in_key_races,enabled
+CITY,City Councilor At Large,office,Citywide Ballot,CITYWIDE,ALL,2,1,TRUE,TRUE
+CITY,Ward Councilor Ward 1,office,Ward Ballot A,WARD,1,1,2,TRUE,TRUE
+CITY,Ward Councilor Ward 2,office,Ward Ballot B,WARD,2,1,3,FALSE,TRUE
+SCHOOL,School Board,office,,CITYWIDE,ALL,3,1,TRUE,TRUE
 `;
 
 describe('CSV parsing and normalization', () => {
@@ -52,7 +52,6 @@ describe('CSV parsing and normalization', () => {
     const invalid = `election,race,ward,candidate\nCITY,Race,ALL,Name`;
     expect(() => parseResultsCsv(invalid)).toThrow(/missing required headers/i);
   });
-
 
   it('accepts CSV with preamble rows before the header', () => {
     const withPreamble = `Generated at,2026-01-01
@@ -64,7 +63,7 @@ CITY,Race,ALL,Name,10`;
     expect(parsed[0]).toMatchObject({ election: 'CITY', race: 'Race', ward: 'ALL', candidate: 'Name', votes: 10 });
   });
 
-  it('computes winners, turnout, and ward reporting metrics', () => {
+  it('computes winners, turnout, ward reporting metrics, and race groups', () => {
     const data = normalizeDashboardData({
       results: parseResultsCsv(resultsCsv),
       wardStatuses: parseWardStatusCsv(wardStatusCsv),
@@ -80,15 +79,18 @@ CITY,Race,ALL,Name,10`;
 
     const atLarge = data.sections.CITY.races.find((race) => race.race === 'City Councilor At Large');
     expect(atLarge).toBeDefined();
+    expect(atLarge?.raceGroup).toBe('Citywide Ballot');
     expect(atLarge?.candidates.filter((c) => c.isWinner).map((c) => c.candidate)).toEqual([
       'Paul Roberts',
       'Ronald Smith',
     ]);
 
     const schoolBoard = data.sections.SCHOOL.races.find((race) => race.race === 'School Board');
+    expect(schoolBoard?.raceGroup).toBeNull();
     expect(schoolBoard?.candidates.every((c) => !c.isWinner)).toBe(true);
 
     const wardRace = data.sections.CITY.races.find((race) => race.race === 'Ward Councilor Ward 1');
+    expect(wardRace?.raceGroup).toBe('Ward Ballot A');
     expect(wardRace?.wardBreakdown.length).toBe(1);
 
     expect(data.overallFinal).toBe(false);

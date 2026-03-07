@@ -65,6 +65,15 @@ function normalizeWard(value: string): string {
   return value.trim().toUpperCase() === 'ALL' ? 'ALL' : value.trim();
 }
 
+function normalizeRaceGroup(value: string | undefined): string | null {
+  if (typeof value !== 'string') {
+    return null;
+  }
+
+  const normalized = value.trim();
+  return normalized.length > 0 ? normalized : null;
+}
+
 function raceKey(election: ElectionId, race: string): string {
   return `${election}::${race}`;
 }
@@ -112,6 +121,7 @@ export function parseRaceConfigCsv(text: string): RaceConfigRow[] {
     election: assertElection(row.election, 'race_config.election'),
     race: row.race,
     race_type: assertRaceType(row.race_type, 'race_config.race_type'),
+    race_group: normalizeRaceGroup(row.race_group),
     scope: row.scope.trim().toUpperCase() === 'WARD' ? 'WARD' : 'CITYWIDE',
     ward: normalizeWard(row.ward),
     seats: parseIntSafe(row.seats, 'race_config.seats'),
@@ -210,6 +220,7 @@ function buildRace(
     election: config.election,
     race: config.race,
     raceType: config.race_type,
+    raceGroup: config.race_group,
     scope: config.scope,
     ward: config.ward,
     seats: config.seats,

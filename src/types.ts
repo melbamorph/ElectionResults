@@ -35,6 +35,7 @@ export interface RaceConfigRow {
   election: ElectionId;
   race: string;
   race_type: RaceType;
+  race_group: string | null;
   scope: RaceScope;
   ward: string;
   seats: number;
@@ -68,6 +69,7 @@ export interface NormalizedRace {
   election: ElectionId;
   race: string;
   raceType: RaceType;
+  raceGroup: string | null;
   scope: RaceScope;
   ward: string;
   seats: number;

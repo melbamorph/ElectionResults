@@ -116,14 +116,12 @@ export default function App() {
       <div className="bg-[radial-gradient(circle_at_top,_#fff_10%,_#f4f2ee_65%,_#ece8df_100%)] pb-10">
         <main className="mx-auto flex max-w-6xl flex-col gap-6 px-4 py-6 md:px-6 md:py-8">
           <ElectionHeader lastUpdated={lastUpdated} overallFinal={data.overallFinal} error={error} />
+          <ReportingSummary summary={data.summary} wards={data.wardStatuses} />
           <ResultsPageNav currentPage={currentPage} />
           {currentPage === 'school' ? (
             <ElectionSection section={data.sections.SCHOOL} />
           ) : (
-            <>
-              <ReportingSummary summary={data.summary} />
-              <ElectionSection section={data.sections.CITY} wardStatuses={data.wardStatuses} />
-            </>
+            <ElectionSection section={data.sections.CITY} />
           )}
         </main>
       </div>
