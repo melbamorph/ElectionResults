@@ -14,6 +14,7 @@ import {
   WardBreakdownRow,
   WardStatusRow,
 } from '../types';
+import { appTheme } from '../theme';
 import { parseBoolSafe, parseCsvObjects, parseIntSafe } from './csv';
 
 const VALID_ELECTIONS: ElectionId[] = ['CITY', 'SCHOOL'];
@@ -35,6 +36,32 @@ const RACE_CONFIG_HEADERS = [
   'show_in_key_races',
   'enabled',
 ];
+
+const WRITE_INS_LABEL = 'Write-Ins';
+const WRITE_INS_PATTERN = /^write[\s-]*ins?$/i;
+const WARD_COLUMN_PATTERN = /^ward_(.+)$/i;
+
+function normalizeCandidateName(value: string): string {
+  const normalized = value.trim();
+  return WRITE_INS_PATTERN.test(normalized) ? WRITE_INS_LABEL : normalized;
+}
+
+function normalizeWriteInWinnerName(value: string | undefined): string | null {
+  if (typeof value !== 'string') {
+    return null;
+  }
+
+  const normalized = value.trim();
+  return normalized.length > 0 ? normalized : null;
+}
+
+function getDisplayCandidateName(candidate: string, isWinner: boolean, writeInWinnerName: string | null): string {
+  if (candidate !== WRITE_INS_LABEL || !isWinner || !writeInWinnerName) {
+    return candidate;
+  }
+
+  return `${WRITE_INS_LABEL} (${writeInWinnerName})`;
+}
 
 function assertElection(value: string, field: string): ElectionId {
   const normalized = value.trim().toUpperCase() as ElectionId;
@@ -64,8 +91,38 @@ function normalizeWard(value: string): string {
   return value.trim().toUpperCase() === 'ALL' ? 'ALL' : value.trim();
 }
 
+function normalizeRaceGroup(value: string | undefined): string | null {
+  if (typeof value !== 'string') {
+    return null;
+  }
+
+  const normalized = value.trim();
+  return normalized.length > 0 ? normalized : null;
+}
+
 function raceKey(election: ElectionId, race: string): string {
   return `${election}::${race}`;
+}
+
+function parseWardVotesFromResultsRow(row: Record<string, string>): Record<string, number> | undefined {
+  const wardVotes: Record<string, number> = {};
+
+  for (const [column, rawValue] of Object.entries(row)) {
+    const match = WARD_COLUMN_PATTERN.exec(column);
+    if (!match) {
+      continue;
+    }
+
+    const ward = normalizeWard(match[1]);
+    const value = rawValue.trim();
+    if (value.length === 0) {
+      continue;
+    }
+
+    wardVotes[ward] = parseIntSafe(value, `results.${column}`);
+  }
+
+  return Object.keys(wardVotes).length > 0 ? wardVotes : undefined;
 }
 
 export function parseResultsCsv(text: string): ResultRow[] {
@@ -76,6 +133,8 @@ export function parseResultsCsv(text: string): ResultRow[] {
     ward: normalizeWard(row.ward),
     candidate: row.candidate,
     votes: parseIntSafe(row.votes, 'results.votes'),
+    wardVotes: parseWardVotesFromResultsRow(row),
+    write_in_winner_name: normalizeWriteInWinnerName(row.write_in_winner_name),
   }));
 }
 
@@ -111,6 +170,7 @@ export function parseRaceConfigCsv(text: string): RaceConfigRow[] {
     election: assertElection(row.election, 'race_config.election'),
     race: row.race,
     race_type: assertRaceType(row.race_type, 'race_config.race_type'),
+    race_group: normalizeRaceGroup(row.race_group),
     scope: row.scope.trim().toUpperCase() === 'WARD' ? 'WARD' : 'CITYWIDE',
     ward: normalizeWard(row.ward),
     seats: parseIntSafe(row.seats, 'race_config.seats'),
@@ -127,8 +187,25 @@ function buildCandidates(
   electionStatus: ElectionStatus,
 ): CandidateResult[] {
   const totalsByCandidate = new Map<string, number>();
+  let writeInWinnerName: string | null = null;
+  let hasExplicitWriteInsRow = false;
+
   for (const row of raceResults) {
-    totalsByCandidate.set(row.candidate, (totalsByCandidate.get(row.candidate) || 0) + row.votes);
+    const candidateName = normalizeCandidateName(row.candidate);
+    totalsByCandidate.set(candidateName, (totalsByCandidate.get(candidateName) || 0) + row.votes);
+
+    if (candidateName !== WRITE_INS_LABEL) {
+      continue;
+    }
+
+    hasExplicitWriteInsRow = true;
+    if (row.write_in_winner_name) {
+      writeInWinnerName = row.write_in_winner_name;
+    }
+  }
+
+  if (raceType === 'office' && !hasExplicitWriteInsRow) {
+    totalsByCandidate.set(WRITE_INS_LABEL, 0);
   }
 
   const totalVotes = Array.from(totalsByCandidate.values()).reduce((sum, v) => sum + v, 0);
@@ -144,34 +221,23 @@ function buildCandidates(
 
   const canCallWinners = electionStatus === 'REPORTED' || electionStatus === 'FINAL';
 
-  return sortedCandidates.map((item, index) => ({
-    candidate: item.candidate,
-    votes: item.votes,
-    percentage: totalVotes > 0 ? (item.votes / totalVotes) * 100 : 0,
-    rank: index + 1,
-    isLeader: index === 0,
-    isWinner: canCallWinners && raceType === 'office' && index < seats,
-  }));
+  return sortedCandidates.map((item, index) => {
+    let isWinner = canCallWinners && raceType === 'office' && index < seats;
+    if (item.candidate === WRITE_INS_LABEL && !hasExplicitWriteInsRow && item.votes === 0) {
+      isWinner = false;
+    }
+
+    return {
+      candidate: getDisplayCandidateName(item.candidate, isWinner, writeInWinnerName),
+      votes: item.votes,
+      percentage: totalVotes > 0 ? (item.votes / totalVotes) * 100 : 0,
+      rank: index + 1,
+      isLeader: index === 0,
+      isWinner,
+    };
+  });
 }
-
-function buildWardBreakdown(raceResults: ResultRow[]): WardBreakdownRow[] {
-  const wardRows = raceResults.filter((row) => row.ward !== 'ALL');
-  if (wardRows.length === 0) {
-    return [];
-  }
-
-  const byWard = new Map<string, Map<string, number>>();
-  for (const row of wardRows) {
-    if (!byWard.has(row.ward)) {
-      byWard.set(row.ward, new Map<string, number>());
-    }
-    const wardCandidates = byWard.get(row.ward);
-    if (!wardCandidates) {
-      continue;
-    }
-    wardCandidates.set(row.candidate, (wardCandidates.get(row.candidate) || 0) + row.votes);
-  }
-
+function buildWardBreakdownRows(byWard: Map<string, Map<string, number>>): WardBreakdownRow[] {
   return Array.from(byWard.entries())
     .sort((a, b) => Number.parseInt(a[0], 10) - Number.parseInt(b[0], 10))
     .map(([ward, candidateVotes]) => {
@@ -197,6 +263,71 @@ function buildWardBreakdown(raceResults: ResultRow[]): WardBreakdownRow[] {
     });
 }
 
+function buildWardBreakdownFromColumns(raceResults: ResultRow[]): WardBreakdownRow[] {
+  const byWard = new Map<string, Map<string, number>>();
+
+  for (const row of raceResults) {
+    if (!row.wardVotes) {
+      continue;
+    }
+
+    const candidateName = normalizeCandidateName(row.candidate);
+    for (const [ward, votes] of Object.entries(row.wardVotes)) {
+      if (ward === 'ALL') {
+        continue;
+      }
+
+      if (!byWard.has(ward)) {
+        byWard.set(ward, new Map<string, number>());
+      }
+
+      const wardCandidates = byWard.get(ward);
+      if (!wardCandidates) {
+        continue;
+      }
+
+      wardCandidates.set(candidateName, (wardCandidates.get(candidateName) || 0) + votes);
+    }
+  }
+
+  if (byWard.size === 0) {
+    return [];
+  }
+
+  return buildWardBreakdownRows(byWard);
+}
+
+function buildWardBreakdownFromWardRows(raceResults: ResultRow[]): WardBreakdownRow[] {
+  const wardRows = raceResults.filter((row) => row.ward !== 'ALL');
+  if (wardRows.length === 0) {
+    return [];
+  }
+
+  const byWard = new Map<string, Map<string, number>>();
+  for (const row of wardRows) {
+    if (!byWard.has(row.ward)) {
+      byWard.set(row.ward, new Map<string, number>());
+    }
+    const wardCandidates = byWard.get(row.ward);
+    if (!wardCandidates) {
+      continue;
+    }
+    const candidateName = normalizeCandidateName(row.candidate);
+    wardCandidates.set(candidateName, (wardCandidates.get(candidateName) || 0) + row.votes);
+  }
+
+  return buildWardBreakdownRows(byWard);
+}
+
+function buildWardBreakdown(raceResults: ResultRow[]): WardBreakdownRow[] {
+  const wardBreakdownFromColumns = buildWardBreakdownFromColumns(raceResults);
+  if (wardBreakdownFromColumns.length > 0) {
+    return wardBreakdownFromColumns;
+  }
+
+  return buildWardBreakdownFromWardRows(raceResults);
+}
+
 function buildRace(
   config: RaceConfigRow,
   raceResults: ResultRow[],
@@ -209,6 +340,7 @@ function buildRace(
     election: config.election,
     race: config.race,
     raceType: config.race_type,
+    raceGroup: config.race_group,
     scope: config.scope,
     ward: config.ward,
     seats: config.seats,
@@ -216,7 +348,7 @@ function buildRace(
     showInKeyRaces: config.show_in_key_races,
     totalVotes,
     candidates,
-    wardBreakdown: config.election === 'CITY' ? buildWardBreakdown(raceResults) : [],
+    wardBreakdown: buildWardBreakdown(raceResults),
   };
 }
 
@@ -276,7 +408,7 @@ function buildElectionSection(
 
   return {
     id,
-    title: id === 'CITY' ? 'City of Lebanon Municipal Election' : 'Lebanon School District Election',
+    title: id === 'CITY' ? appTheme.citySectionTitle : appTheme.schoolSectionTitle,
     status: electionStatus,
     keyRaces: races.filter((race) => race.showInKeyRaces),
     offices: races.filter((race) => race.raceType === 'office' && !race.showInKeyRaces),
@@ -349,3 +481,4 @@ export function normalizeDashboardData(args: {
     overallFinal,
   };
 }
+
