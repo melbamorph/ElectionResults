@@ -12,6 +12,8 @@ export interface ResultRow {
   ward: string;
   candidate: string;
   votes: number;
+  wardVotes?: Record<string, number>;
+  write_in_winner_name?: string | null;
 }
 
 export interface WardStatusRow {
@@ -35,6 +37,7 @@ export interface RaceConfigRow {
   election: ElectionId;
   race: string;
   race_type: RaceType;
+  race_group: string | null;
   scope: RaceScope;
   ward: string;
   seats: number;
@@ -68,6 +71,7 @@ export interface NormalizedRace {
   election: ElectionId;
   race: string;
   raceType: RaceType;
+  raceGroup: string | null;
   scope: RaceScope;
   ward: string;
   seats: number;
@@ -112,3 +116,4 @@ export interface CsvEndpoints {
   turnoutUrl: string;
   raceConfigUrl: string;
 }
+

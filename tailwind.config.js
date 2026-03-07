@@ -8,8 +8,12 @@ export default {
         slate: '#64748b',
         paper: '#f4f2ee',
         line: '#d4d4d4',
+        clay: '#a67c52',
+        sage: '#6d8a66',
+        smoke: '#6b7280',
+        mist: '#f6f3ed',
         winner: '#0f766e',
-        leader: '#1d4ed8',
+        leader: '#7b6d50',
         alert: '#b45309',
       },
       boxShadow: {
