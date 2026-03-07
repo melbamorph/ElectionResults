@@ -12,3 +12,16 @@ export function statusChipClass(status: ElectionStatus): string {
       return 'bg-smoke/10 text-smoke border-smoke/30';
   }
 }
+
+export function statusSymbol(status: ElectionStatus): string {
+  switch (status) {
+    case 'FINAL':
+      return '✓';
+    case 'REPORTED':
+      return '✓';
+    case 'COUNTING':
+      return '⏳';
+    default:
+      return '○';
+  }
+}

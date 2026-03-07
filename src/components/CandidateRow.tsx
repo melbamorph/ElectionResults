@@ -1,13 +1,23 @@
+import { useState } from 'react';
 import { CandidateResult } from '../types';
 import { formatNumber, formatPercent } from '../utils/format';
 import { VoteBar } from './VoteBar';
 
+interface CandidateWardVote {
+  ward: string;
+  votes: number;
+}
+
 interface CandidateRowProps {
   candidate: CandidateResult;
   compact?: boolean;
+  wardVotes?: CandidateWardVote[];
 }
 
-export function CandidateRow({ candidate, compact = false }: CandidateRowProps) {
+export function CandidateRow({ candidate, compact = false, wardVotes = [] }: CandidateRowProps) {
+  const [wardBreakdownExpanded, setWardBreakdownExpanded] = useState(false);
+  const hasWardBreakdown = wardVotes.length > 0;
+
   return (
     <div
       className={
@@ -37,6 +47,30 @@ export function CandidateRow({ candidate, compact = false }: CandidateRowProps) 
       <div className={compact ? 'mt-1.5' : 'mt-2'}>
         <VoteBar percent={candidate.percentage} isLeader={candidate.isLeader} isWinner={candidate.isWinner} compact={compact} />
       </div>
+
+      {hasWardBreakdown && (
+        <div className={compact ? 'mt-1.5' : 'mt-2'}>
+          <button
+            type="button"
+            className={`${compact ? 'text-[11px]' : 'text-xs'} font-semibold text-clay hover:underline`}
+            aria-label={`${wardBreakdownExpanded ? 'Hide' : 'Show'} ward breakdown for ${candidate.candidate}`}
+            onClick={() => setWardBreakdownExpanded((current) => !current)}
+          >
+            {wardBreakdownExpanded ? 'Hide ward breakdown' : 'Show ward breakdown'}
+          </button>
+
+          {wardBreakdownExpanded && (
+            <ul className={`${compact ? 'mt-1.5 text-[11px]' : 'mt-2 text-xs'} rounded-md border border-line/70 bg-white p-2`}>
+              {wardVotes.map((wardVote) => (
+                <li key={`${candidate.candidate}-${wardVote.ward}`} className="flex items-center justify-between py-0.5">
+                  <span className="text-slate">Ward {wardVote.ward}</span>
+                  <span className="font-semibold text-ink">{formatNumber(wardVote.votes)}</span>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      )}
     </div>
   );
 }

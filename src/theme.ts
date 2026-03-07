@@ -10,8 +10,8 @@ const locationLabel = envOrFallback(import.meta.env.VITE_THEME_LOCATION, default
 export const appTheme = {
   locationLabel,
   dashboardHeading: 'Election Results',
-  dashboardSubheading: 'Unofficial results from across Mos Eisley precincts and school voting.',
+  dashboardSubheading: 'Election results from across Mos Eisley.',
   browserTitle: `${locationLabel} Election Results`,
-  citySectionTitle: `${locationLabel} Election`,
+  citySectionTitle: `${locationLabel} Municipal Election`,
   schoolSectionTitle: `${locationLabel} School District Election`,
 };

@@ -56,8 +56,21 @@ Optional security env vars:
 `results.csv`
 
 ```csv
-election,race,ward,candidate,votes
+election,race,ward,candidate,votes[,ward_1,ward_2,ward_3][,write_in_winner_name]
 ```
+
+Optional `results.csv` columns:
+
+```csv
+ward_1,ward_2,ward_3,write_in_winner_name
+```
+
+- `votes` remains the total for that candidate/choice.
+- `ward_1`, `ward_2`, and `ward_3` are optional per-ward breakout columns used to build ward breakdown cards (typically on citywide races).
+- If ward columns are present, enter numeric values (use `0` when needed, leave blank when not applicable).
+- Keep the `candidate` value as `Write-Ins` (or `Write In`) and enter the total in `votes`.
+- If that write-in line is a called winner, set `write_in_winner_name` to display the winner's name.
+- Office races always render a `Write-Ins` line (defaulting to `0` when no row is provided).
 
 `ward_status.csv`
 
@@ -80,7 +93,7 @@ election,ward,ballots_counted,registered_voters
 `race_config.csv`
 
 ```csv
-election,race,race_type,scope,ward,seats,sort_order,show_in_key_races,enabled
+election,race,race_type,race_group,scope,ward,seats,sort_order,show_in_key_races,enabled
 ```
 
 ### Status Values
@@ -93,8 +106,9 @@ election,race,race_type,scope,ward,seats,sort_order,show_in_key_races,enabled
 ### Notes
 
 - `race_config.csv` is authoritative for race order, race type, seat count, and key-race flags.
+- `race_group` is optional. Use it to create sub-groups inside the two main containers (`Elected Positions` and `Ballot Questions`), such as `Democratic Ballot` and `Republican Ballot`.
 - CITY turnout summary uses ward rows (`1`, `2`, `3`) and ignores CITY `ALL` when ward rows are present.
-- School races are citywide only and do not display ward breakdowns.
+- School races are citywide only; ward breakdowns display when per-ward columns are provided in results.
 
 ## 3. Build and Preview
 
@@ -182,3 +196,4 @@ Local/offline sample CSV files are in:
 ## 8. GitHub Hardening Checklist
 
 See `docs/GITHUB_SETUP.md` for the exact repository settings and election-night validation checklist.
+
