@@ -1,9 +1,8 @@
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { ElectionStatus, NormalizedRace } from '../types';
-import { titleCase } from '../utils/format';
+import { formatNumber, titleCase } from '../utils/format';
 import { CandidateRow } from './CandidateRow';
 import { statusChipClass } from './statusStyles';
-import { WardBreakdown } from './WardBreakdown';
 
 interface RaceCardProps {
   race: NormalizedRace;
@@ -12,18 +11,50 @@ interface RaceCardProps {
   accentClassName?: string;
 }
 
+function toWardSortValue(ward: string): number {
+  const parsed = Number.parseInt(ward, 10);
+  return Number.isNaN(parsed) ? Number.MAX_SAFE_INTEGER : parsed;
+}
+
 export function RaceCard({
   race,
   electionStatus,
   compact = false,
   accentClassName = 'bg-smoke/40',
 }: RaceCardProps) {
-  const [expanded, setExpanded] = useState(false);
+  const showCandidateWardBreakdown = race.scope === 'CITYWIDE' && race.wardBreakdown.length > 0;
 
-  const hasWardBreakdown = useMemo(
-    () => race.election === 'CITY' && race.wardBreakdown.length > 0,
-    [race.election, race.wardBreakdown.length],
-  );
+  const candidateWardVotes = useMemo(() => {
+    const byCandidate = new Map<string, { ward: string; votes: number }[]>();
+
+    if (!showCandidateWardBreakdown) {
+      return byCandidate;
+    }
+
+    for (const wardRow of race.wardBreakdown) {
+      for (const candidate of wardRow.candidates) {
+        if (!byCandidate.has(candidate.candidate)) {
+          byCandidate.set(candidate.candidate, []);
+        }
+
+        const rows = byCandidate.get(candidate.candidate);
+        if (!rows) {
+          continue;
+        }
+
+        rows.push({
+          ward: wardRow.ward,
+          votes: candidate.votes,
+        });
+      }
+    }
+
+    for (const rows of byCandidate.values()) {
+      rows.sort((a, b) => toWardSortValue(a.ward) - toWardSortValue(b.ward));
+    }
+
+    return byCandidate;
+  }, [race.wardBreakdown, showCandidateWardBreakdown]);
 
   return (
     <article
@@ -38,6 +69,7 @@ export function RaceCard({
       <header className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
         <div>
           <h4 className={`font-display font-semibold text-ink ${compact ? 'text-base' : 'text-xl'}`}>{race.race}</h4>
+          <p className={`${compact ? 'text-[11px]' : 'text-xs'} text-slate`}>Total votes: {formatNumber(race.totalVotes)}</p>
           {race.raceType === 'office' && race.seats > 1 && (
             <p className={`${compact ? 'text-[11px]' : 'text-xs'} uppercase tracking-wide text-slate`}>Vote for {race.seats}</p>
           )}
@@ -52,23 +84,13 @@ export function RaceCard({
       </header>
 
       <div className={`${compact ? 'mt-3 space-y-2' : 'mt-4 space-y-3'}`}>
-        {race.candidates.map((candidate) => (
-          <CandidateRow key={candidate.candidate} candidate={candidate} compact={compact} />
-        ))}
-      </div>
+        {race.candidates.map((candidate) => {
+          const candidateName = candidate.candidate.startsWith('Write-Ins (') ? 'Write-Ins' : candidate.candidate;
+          const wardVotes = candidateWardVotes.get(candidateName) || [];
 
-      {hasWardBreakdown && (
-        <div className="mt-4">
-          <button
-            type="button"
-            className="text-sm font-semibold text-clay hover:underline"
-            onClick={() => setExpanded((current) => !current)}
-          >
-            {expanded ? 'Hide ward breakdown' : 'Show ward breakdown'}
-          </button>
-          {expanded && <WardBreakdown rows={race.wardBreakdown} />}
-        </div>
-      )}
+          return <CandidateRow key={candidate.candidate} candidate={candidate} compact={compact} wardVotes={wardVotes} />;
+        })}
+      </div>
     </article>
   );
 }
