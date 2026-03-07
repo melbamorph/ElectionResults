@@ -85,7 +85,7 @@ describe('ElectionSection', () => {
     expect(screen.queryByText(/Ward Reporting Status/i)).not.toBeInTheDocument();
   });
 
-  it('groups library trustees with councilors at large and hides duplicate all-offices block', () => {
+  it('groups library trustees and election workers into compact city groupings', () => {
     const ward = buildRace({ race: 'Ward Councilor Ward 1', scope: 'WARD', ward: '1', sortOrder: 1 });
     const atLarge = buildRace({ race: 'City Councilor At Large', sortOrder: 2, seats: 2 });
     const library = buildRace({
@@ -94,10 +94,16 @@ describe('ElectionSection', () => {
       seats: 3,
       showInKeyRaces: false,
     });
+    const electionWorker = buildRace({
+      race: 'Election Workers',
+      sortOrder: 4,
+      seats: 2,
+      showInKeyRaces: false,
+    });
     const ballot = buildRace({
       race: 'Question Number One',
       raceType: 'ballot',
-      sortOrder: 4,
+      sortOrder: 5,
       showInKeyRaces: false,
     });
 
@@ -106,9 +112,9 @@ describe('ElectionSection', () => {
       title: appTheme.citySectionTitle,
       status: 'REPORTED',
       keyRaces: [ward, atLarge],
-      offices: [library],
+      offices: [library, electionWorker],
       ballots: [ballot],
-      races: [ward, atLarge, library, ballot],
+      races: [ward, atLarge, library, electionWorker, ballot],
     };
 
     render(<ElectionSection section={section} wardStatuses={[]} />);
@@ -118,11 +124,20 @@ describe('ElectionSection', () => {
     });
     expect(atLargeGroup).toBeInTheDocument();
 
-    const groupContainer = atLargeGroup.closest('section');
-    expect(groupContainer).not.toBeNull();
-    if (groupContainer) {
-      expect(within(groupContainer).getByText('City Councilor At Large')).toBeInTheDocument();
-      expect(within(groupContainer).getByText('Library Trustees')).toBeInTheDocument();
+    const atLargeContainer = atLargeGroup.closest('section');
+    expect(atLargeContainer).not.toBeNull();
+    if (atLargeContainer) {
+      expect(within(atLargeContainer).getByText('City Councilor At Large')).toBeInTheDocument();
+      expect(within(atLargeContainer).getByText('Library Trustees')).toBeInTheDocument();
+    }
+
+    const electionWorkerGroup = screen.getAllByRole('heading', { name: /^Election Workers$/i })[0];
+    expect(electionWorkerGroup).toBeInTheDocument();
+
+    const electionWorkerContainer = electionWorkerGroup.closest('section');
+    expect(electionWorkerContainer).not.toBeNull();
+    if (electionWorkerContainer) {
+      expect(within(electionWorkerContainer).getAllByText('Election Workers').length).toBeGreaterThan(0);
     }
 
     expect(screen.queryByRole('heading', { name: /^All Offices$/i })).not.toBeInTheDocument();
