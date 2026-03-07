@@ -1,6 +1,6 @@
 import { CsvEndpoints } from './types';
 
-const DEFAULT_ALLOWED_CSV_HOSTS = ['docs.google.com', 'docs.googleusercontent.com'];
+const DEFAULT_ALLOWED_CSV_HOSTS = ['docs.google.com', 'googleusercontent.com'];
 
 interface EndpointValidationOptions {
   allowAnyHost: boolean;
@@ -104,3 +104,4 @@ export const csvEndpoints: CsvEndpoints = {
 };
 
 export const refreshIntervalMs = 20_000;
+
