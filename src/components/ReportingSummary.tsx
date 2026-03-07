@@ -50,22 +50,24 @@ export function ReportingSummary({
 
       {wards.length > 0 && (
         <section className="mt-5 rounded-xl border border-line bg-paper/35 p-4">
-          <div className="flex flex-wrap items-start justify-between gap-3">
+          <div>
             <div>
-              <h3 className="font-display text-base font-semibold text-ink">Ward Reporting Status</h3>
+              <div className="flex flex-wrap items-center gap-2">
+                <h3 className="font-display text-base font-semibold text-ink">Ward Reporting Status</h3>
+                <button
+                  type="button"
+                  onClick={onResetWard}
+                  disabled={!selectedWard}
+                  className="inline-flex items-center rounded-full border border-line bg-paper px-3 py-1 text-xs font-semibold uppercase tracking-wide text-ink transition hover:border-slate hover:bg-white disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:border-line disabled:hover:bg-paper"
+                >
+                  Clear Ward Filter
+                </button>
+              </div>
               <p className="mt-1 text-xs text-slate">Click a ward card to filter Municipal Results by that ward.</p>
               {selectedWard && (
                 <p className="mt-1 text-xs font-medium text-ink">Currently filtering for Ward {selectedWard}.</p>
               )}
             </div>
-            <button
-              type="button"
-              onClick={onResetWard}
-              disabled={!selectedWard}
-              className="inline-flex items-center rounded-full border border-line bg-paper px-3 py-1 text-xs font-semibold uppercase tracking-wide text-ink transition hover:border-slate hover:bg-white disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:border-line disabled:hover:bg-paper"
-            >
-              Reset
-            </button>
           </div>
 
           <ul className="mt-3 grid gap-3 md:grid-cols-3">
@@ -104,3 +106,4 @@ export function ReportingSummary({
     </section>
   );
 }
+

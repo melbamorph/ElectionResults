@@ -12,6 +12,7 @@ export interface ResultRow {
   ward: string;
   candidate: string;
   votes: number;
+  wardVotes?: Record<string, number>;
   write_in_winner_name?: string | null;
 }
 

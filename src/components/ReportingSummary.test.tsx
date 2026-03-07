@@ -44,7 +44,7 @@ describe('ReportingSummary', () => {
     expect(ward3).toHaveTextContent('○');
     expect(ward3).toHaveTextContent(/pending/i);
 
-    expect(screen.getByRole('button', { name: /^reset$/i })).toBeDisabled();
+    expect(screen.getByRole('button', { name: /clear ward filter/i })).toBeDisabled();
   });
 
   it('handles card selection and reset interactions', async () => {
@@ -68,7 +68,8 @@ describe('ReportingSummary', () => {
     await user.click(screen.getByRole('button', { name: /show ward 1 ballot items/i }));
     expect(onSelectWard).toHaveBeenCalledWith('1');
 
-    await user.click(screen.getByRole('button', { name: /^reset$/i }));
+    await user.click(screen.getByRole('button', { name: /clear ward filter/i }));
     expect(onResetWard).toHaveBeenCalledTimes(1);
   });
 });
+

@@ -56,15 +56,18 @@ Optional security env vars:
 `results.csv`
 
 ```csv
-election,race,ward,candidate,votes
+election,race,ward,candidate,votes[,ward_1,ward_2,ward_3][,write_in_winner_name]
 ```
 
-Optional `results.csv` column (office races only):
+Optional `results.csv` columns:
 
 ```csv
-write_in_winner_name
+ward_1,ward_2,ward_3,write_in_winner_name
 ```
 
+- `votes` remains the total for that candidate/choice.
+- `ward_1`, `ward_2`, and `ward_3` are optional per-ward breakout columns used to build ward breakdown cards (typically on citywide races).
+- If ward columns are present, enter numeric values (use `0` when needed, leave blank when not applicable).
 - Keep the `candidate` value as `Write-Ins` (or `Write In`) and enter the total in `votes`.
 - If that write-in line is a called winner, set `write_in_winner_name` to display the winner's name.
 - Office races always render a `Write-Ins` line (defaulting to `0` when no row is provided).

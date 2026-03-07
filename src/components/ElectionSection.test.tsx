@@ -1,4 +1,4 @@
-import { render, screen, within } from '@testing-library/react';
+import { fireEvent, render, screen, within } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import { appTheme } from '../theme';
 import { ElectionSectionData, NormalizedRace } from '../types';
@@ -163,11 +163,62 @@ describe('ElectionSection', () => {
 });
 
 describe('RaceCard', () => {
-  it('shows total votes beneath the race title and no ward breakdown toggle', () => {
+  it('shows total votes beneath the race title', () => {
     render(<RaceCard race={citySection.keyRaces[0]} electionStatus="REPORTED" />);
 
     expect(screen.getByText(/Total votes: 215/i)).toBeInTheDocument();
-    expect(screen.queryByRole('button', { name: /show ward breakdown/i })).not.toBeInTheDocument();
-    expect(screen.queryByRole('button', { name: /hide ward breakdown/i })).not.toBeInTheDocument();
+  });
+
+  it('shows candidate-level and race-level ward breakdown toggles for citywide races', () => {
+    const allWardRace = buildRace({
+      race: 'Ward Councilor (All Wards)',
+      scope: 'CITYWIDE',
+      ward: 'ALL',
+      totalVotes: 350,
+      candidates: [
+        { candidate: 'Andrew Faunce', votes: 200, percentage: 57.1, rank: 1, isLeader: true, isWinner: true },
+        { candidate: 'Jamie Stone', votes: 150, percentage: 42.9, rank: 2, isLeader: false, isWinner: false },
+      ],
+      wardBreakdown: [
+        {
+          ward: '1',
+          totalVotes: 180,
+          candidates: [
+            { candidate: 'Andrew Faunce', votes: 100, percentage: 55.6 },
+            { candidate: 'Jamie Stone', votes: 80, percentage: 44.4 },
+          ],
+        },
+        {
+          ward: '2',
+          totalVotes: 170,
+          candidates: [
+            { candidate: 'Andrew Faunce', votes: 100, percentage: 58.8 },
+            { candidate: 'Jamie Stone', votes: 70, percentage: 41.2 },
+          ],
+        },
+      ],
+    });
+
+    const { rerender } = render(<RaceCard race={allWardRace} electionStatus="REPORTED" />);
+
+    expect(screen.getByRole('button', { name: /show ward breakdown for andrew faunce/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /show ward breakdown for jamie stone/i })).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('button', { name: /show ward breakdown for andrew faunce/i }));
+    expect(screen.getByText('Ward 1')).toBeInTheDocument();
+    expect(screen.getByText('Ward 2')).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('button', { name: /hide ward breakdown for andrew faunce/i }));
+    expect(screen.queryByText('Ward 1')).not.toBeInTheDocument();
+    expect(screen.queryByText('Ward 2')).not.toBeInTheDocument();
+
+    expect(screen.getByRole('button', { name: /^show ward breakdown$/i })).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: /^show ward breakdown$/i }));
+    expect(screen.getByRole('heading', { name: /^Ward 1$/i })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: /^Ward 2$/i })).toBeInTheDocument();
+
+    rerender(<RaceCard race={citySection.keyRaces[0]} electionStatus="REPORTED" />);
+    expect(screen.queryByRole('button', { name: /show ward breakdown for andrew faunce/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /^show ward breakdown$/i })).not.toBeInTheDocument();
   });
 });

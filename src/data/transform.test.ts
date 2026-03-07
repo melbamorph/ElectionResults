@@ -8,17 +8,17 @@ import {
   parseWardStatusCsv,
 } from './transform';
 
-const resultsCsv = `election,race,ward,candidate,votes
-CITY,City Councilor At Large,ALL,Paul Roberts,340
-CITY,City Councilor At Large,ALL,Ronald Smith,325
-CITY,City Councilor At Large,ALL,Kellen Appleton,280
-CITY,Ward Councilor Ward 1,1,Andrew Faunce,120
-CITY,Ward Councilor Ward 1,1,Jamie Stone,95
-CITY,Ward Councilor Ward 2,2,Eric Cole,98
-CITY,Ward Councilor Ward 2,2,George Sykes,110
-SCHOOL,School Board,ALL,Candy Hammond,410
-SCHOOL,School Board,ALL,Travis Talbert,398
-SCHOOL,School Board,ALL,Tia Winter,372
+const resultsCsv = `election,race,ward,candidate,votes,ward_1,ward_2,ward_3
+CITY,City Councilor At Large,ALL,Paul Roberts,340,110,120,110
+CITY,City Councilor At Large,ALL,Ronald Smith,325,105,110,110
+CITY,City Councilor At Large,ALL,Kellen Appleton,280,90,95,95
+CITY,Ward Councilor Ward 1,1,Andrew Faunce,120,,,
+CITY,Ward Councilor Ward 1,1,Jamie Stone,95,,,
+CITY,Ward Councilor Ward 2,2,Eric Cole,98,,,
+CITY,Ward Councilor Ward 2,2,George Sykes,110,,,
+SCHOOL,School Board,ALL,Candy Hammond,410,,,
+SCHOOL,School Board,ALL,Travis Talbert,398,,,
+SCHOOL,School Board,ALL,Tia Winter,372,,,
 `;
 
 const wardStatusCsv = `ward,status
@@ -85,6 +85,14 @@ CITY,Race,ALL,Name,10`;
       'Ronald Smith',
     ]);
     expect(atLarge?.candidates.find((c) => c.candidate === 'Write-Ins')).toMatchObject({ votes: 0, isWinner: false });
+    expect(atLarge?.wardBreakdown.map((row) => row.ward)).toEqual(['1', '2', '3']);
+    expect(atLarge?.wardBreakdown.find((row) => row.ward === '2')?.totalVotes).toBe(325);
+    expect(
+      atLarge?.wardBreakdown
+        .find((row) => row.ward === '2')
+        ?.candidates.find((candidate) => candidate.candidate === 'Paul Roberts')
+        ?.votes,
+    ).toBe(120);
 
     const schoolBoard = data.sections.SCHOOL.races.find((race) => race.race === 'School Board');
     expect(schoolBoard?.raceGroup).toBeNull();
