@@ -6,6 +6,10 @@ describe('config security validation', () => {
     allowAnyHost: false,
     allowedHosts: ['docs.google.com'],
   };
+  const allowAnyHostOptions = {
+    allowAnyHost: true,
+    allowedHosts: [],
+  };
 
   it('accepts relative mock endpoints', () => {
     expect(validateCsvEndpoint('/mock/results.csv', 'results', strictOptions)).toBe('/mock/results.csv');
@@ -26,6 +30,26 @@ describe('config security validation', () => {
     expect(() =>
       validateCsvEndpoint('https://evil.example.com/results.csv', 'results', strictOptions),
     ).toThrow(/not allowed/i);
+  });
+
+  it('does not treat deceptive google-like domains as google hosts', () => {
+    expect(
+      validateCsvEndpoint(
+        'https://evilgoogle.com/results.csv?output=html',
+        'results',
+        allowAnyHostOptions,
+      ),
+    ).toContain('evilgoogle.com');
+  });
+
+  it('rejects non-csv output for google hosts', () => {
+    expect(() =>
+      validateCsvEndpoint(
+        'https://docs.google.com/spreadsheets/d/e/example/pubhtml?output=html',
+        'results',
+        allowAnyHostOptions,
+      ),
+    ).toThrow(/output=csv/i);
   });
 
   it('parses custom allowed host list', () => {
