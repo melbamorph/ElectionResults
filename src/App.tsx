@@ -1,9 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { ElectionHeader } from './components/ElectionHeader';
 import { ElectionSection } from './components/ElectionSection';
 import { ReportingSummary } from './components/ReportingSummary';
 import { useElectionData } from './hooks/useElectionData';
 import { appTheme } from './theme';
+import { ElectionSectionData } from './types';
 
 type ResultsPage = 'municipal' | 'school';
 
@@ -21,6 +22,25 @@ function pageFromHash(hash: string): ResultsPage {
   }
 
   return 'municipal';
+}
+
+export function filterMunicipalSectionByWard(
+  section: ElectionSectionData,
+  selectedWard: string | null,
+): ElectionSectionData {
+  if (!selectedWard) {
+    return section;
+  }
+
+  const races = section.races.filter((race) => race.scope === 'CITYWIDE' || race.ward === selectedWard);
+
+  return {
+    ...section,
+    races,
+    keyRaces: races.filter((race) => race.showInKeyRaces),
+    offices: races.filter((race) => race.raceType === 'office' && !race.showInKeyRaces),
+    ballots: races.filter((race) => race.raceType === 'ballot'),
+  };
 }
 
 interface ResultsPageNavProps {
@@ -84,6 +104,7 @@ function EmptyState({ message }: { message: string }) {
 export default function App() {
   const { data, isLoading, error, lastUpdated } = useElectionData();
   const [currentPage, setCurrentPage] = useState<ResultsPage>(() => pageFromHash(window.location.hash));
+  const [selectedWard, setSelectedWard] = useState<string | null>(null);
 
   useEffect(() => {
     const onHashChange = () => {
@@ -103,6 +124,17 @@ export default function App() {
         : `${appTheme.locationLabel} Municipal Election Results`;
   }, [currentPage]);
 
+  useEffect(() => {
+    if (!data || !selectedWard) {
+      return;
+    }
+
+    const wardExists = data.wardStatuses.some((wardStatus) => wardStatus.ward === selectedWard);
+    if (!wardExists) {
+      setSelectedWard(null);
+    }
+  }, [data, selectedWard]);
+
   if (isLoading && !data) {
     return <LoadingState />;
   }
@@ -111,17 +143,25 @@ export default function App() {
     return <EmptyState message={error || 'No election data is available.'} />;
   }
 
+  const municipalSection = filterMunicipalSectionByWard(data.sections.CITY, selectedWard);
+
   return (
     <div className="min-h-screen bg-paper">
       <div className="bg-[radial-gradient(circle_at_top,_#fff_10%,_#f4f2ee_65%,_#ece8df_100%)] pb-10">
         <main className="mx-auto flex max-w-6xl flex-col gap-6 px-4 py-6 md:px-6 md:py-8">
           <ElectionHeader lastUpdated={lastUpdated} overallFinal={data.overallFinal} error={error} />
-          <ReportingSummary summary={data.summary} wards={data.wardStatuses} />
+          <ReportingSummary
+            summary={data.summary}
+            wards={data.wardStatuses}
+            selectedWard={selectedWard}
+            onSelectWard={setSelectedWard}
+            onResetWard={() => setSelectedWard(null)}
+          />
           <ResultsPageNav currentPage={currentPage} />
           {currentPage === 'school' ? (
             <ElectionSection section={data.sections.SCHOOL} />
           ) : (
-            <ElectionSection section={data.sections.CITY} />
+            <ElectionSection section={municipalSection} />
           )}
         </main>
       </div>

@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, within } from '@testing-library/react';
+import { render, screen, within } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import { appTheme } from '../theme';
 import { ElectionSectionData, NormalizedRace } from '../types';
@@ -163,16 +163,11 @@ describe('ElectionSection', () => {
 });
 
 describe('RaceCard', () => {
-  it('supports expandable ward breakdown on city races', () => {
+  it('shows total votes beneath the race title and no ward breakdown toggle', () => {
     render(<RaceCard race={citySection.keyRaces[0]} electionStatus="REPORTED" />);
 
-    const toggle = screen.getByRole('button', { name: /show ward breakdown/i });
-    expect(toggle).toBeInTheDocument();
-
-    fireEvent.click(toggle);
     expect(screen.getByText(/Total votes: 215/i)).toBeInTheDocument();
-
-    fireEvent.click(screen.getByRole('button', { name: /hide ward breakdown/i }));
-    expect(screen.queryByText(/Total votes: 215/i)).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /show ward breakdown/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /hide ward breakdown/i })).not.toBeInTheDocument();
   });
 });

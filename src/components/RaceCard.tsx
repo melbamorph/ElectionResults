@@ -1,9 +1,7 @@
-import { useMemo, useState } from 'react';
 import { ElectionStatus, NormalizedRace } from '../types';
-import { titleCase } from '../utils/format';
+import { formatNumber, titleCase } from '../utils/format';
 import { CandidateRow } from './CandidateRow';
 import { statusChipClass } from './statusStyles';
-import { WardBreakdown } from './WardBreakdown';
 
 interface RaceCardProps {
   race: NormalizedRace;
@@ -18,13 +16,6 @@ export function RaceCard({
   compact = false,
   accentClassName = 'bg-smoke/40',
 }: RaceCardProps) {
-  const [expanded, setExpanded] = useState(false);
-
-  const hasWardBreakdown = useMemo(
-    () => race.election === 'CITY' && race.wardBreakdown.length > 0,
-    [race.election, race.wardBreakdown.length],
-  );
-
   return (
     <article
       className={
@@ -38,6 +29,7 @@ export function RaceCard({
       <header className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
         <div>
           <h4 className={`font-display font-semibold text-ink ${compact ? 'text-base' : 'text-xl'}`}>{race.race}</h4>
+          <p className={`${compact ? 'text-[11px]' : 'text-xs'} text-slate`}>Total votes: {formatNumber(race.totalVotes)}</p>
           {race.raceType === 'office' && race.seats > 1 && (
             <p className={`${compact ? 'text-[11px]' : 'text-xs'} uppercase tracking-wide text-slate`}>Vote for {race.seats}</p>
           )}
@@ -56,19 +48,6 @@ export function RaceCard({
           <CandidateRow key={candidate.candidate} candidate={candidate} compact={compact} />
         ))}
       </div>
-
-      {hasWardBreakdown && (
-        <div className="mt-4">
-          <button
-            type="button"
-            className="text-sm font-semibold text-clay hover:underline"
-            onClick={() => setExpanded((current) => !current)}
-          >
-            {expanded ? 'Hide ward breakdown' : 'Show ward breakdown'}
-          </button>
-          {expanded && <WardBreakdown rows={race.wardBreakdown} />}
-        </div>
-      )}
     </article>
   );
 }
