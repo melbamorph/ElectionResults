@@ -16,9 +16,9 @@ CITY,Ward Councilor Ward 1,1,Andrew Faunce,120,,,
 CITY,Ward Councilor Ward 1,1,Jamie Stone,95,,,
 CITY,Ward Councilor Ward 2,2,Eric Cole,98,,,
 CITY,Ward Councilor Ward 2,2,George Sykes,110,,,
-SCHOOL,School Board,ALL,Candy Hammond,410,,,
-SCHOOL,School Board,ALL,Travis Talbert,398,,,
-SCHOOL,School Board,ALL,Tia Winter,372,,,
+SCHOOL,School Board,ALL,Candy Hammond,410,140,135,135
+SCHOOL,School Board,ALL,Travis Talbert,398,132,133,133
+SCHOOL,School Board,ALL,Tia Winter,372,120,126,126
 `;
 
 const wardStatusCsv = `ward,status
@@ -98,6 +98,8 @@ CITY,Race,ALL,Name,10`;
     expect(schoolBoard?.raceGroup).toBeNull();
     expect(schoolBoard?.candidates.every((c) => !c.isWinner)).toBe(true);
     expect(schoolBoard?.candidates.find((c) => c.candidate === 'Write-Ins')).toMatchObject({ votes: 0, isWinner: false });
+    expect(schoolBoard?.wardBreakdown.map((row) => row.ward)).toEqual(['1', '2', '3']);
+    expect(schoolBoard?.wardBreakdown.find((row) => row.ward === '1')?.totalVotes).toBe(392);
 
     const wardRace = data.sections.CITY.races.find((race) => race.race === 'Ward Councilor Ward 1');
     expect(wardRace?.raceGroup).toBe('Ward Ballot A');

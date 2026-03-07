@@ -348,7 +348,7 @@ function buildRace(
     showInKeyRaces: config.show_in_key_races,
     totalVotes,
     candidates,
-    wardBreakdown: config.election === 'CITY' ? buildWardBreakdown(raceResults) : [],
+    wardBreakdown: buildWardBreakdown(raceResults),
   };
 }
 

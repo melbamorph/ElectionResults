@@ -1,9 +1,8 @@
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { ElectionStatus, NormalizedRace } from '../types';
 import { formatNumber, titleCase } from '../utils/format';
 import { CandidateRow } from './CandidateRow';
 import { statusChipClass } from './statusStyles';
-import { WardBreakdown } from './WardBreakdown';
 
 interface RaceCardProps {
   race: NormalizedRace;
@@ -23,13 +22,12 @@ export function RaceCard({
   compact = false,
   accentClassName = 'bg-smoke/40',
 }: RaceCardProps) {
-  const [breakdownExpanded, setBreakdownExpanded] = useState(false);
-  const showWardBreakdown = race.scope === 'CITYWIDE' && race.wardBreakdown.length > 0;
+  const showCandidateWardBreakdown = race.scope === 'CITYWIDE' && race.wardBreakdown.length > 0;
 
   const candidateWardVotes = useMemo(() => {
     const byCandidate = new Map<string, { ward: string; votes: number }[]>();
 
-    if (!showWardBreakdown) {
+    if (!showCandidateWardBreakdown) {
       return byCandidate;
     }
 
@@ -56,7 +54,7 @@ export function RaceCard({
     }
 
     return byCandidate;
-  }, [race.wardBreakdown, showWardBreakdown]);
+  }, [race.wardBreakdown, showCandidateWardBreakdown]);
 
   return (
     <article
@@ -93,19 +91,6 @@ export function RaceCard({
           return <CandidateRow key={candidate.candidate} candidate={candidate} compact={compact} wardVotes={wardVotes} />;
         })}
       </div>
-
-      {showWardBreakdown && (
-        <div className="mt-4">
-          <button
-            type="button"
-            className="text-sm font-semibold text-clay hover:underline"
-            onClick={() => setBreakdownExpanded((current) => !current)}
-          >
-            {breakdownExpanded ? 'Hide ward breakdown' : 'Show ward breakdown'}
-          </button>
-          {breakdownExpanded && <WardBreakdown rows={race.wardBreakdown} />}
-        </div>
-      )}
     </article>
   );
 }

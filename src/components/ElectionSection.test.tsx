@@ -169,9 +169,10 @@ describe('RaceCard', () => {
     expect(screen.getByText(/Total votes: 215/i)).toBeInTheDocument();
   });
 
-  it('shows candidate-level and race-level ward breakdown toggles for citywide races', () => {
+  it('shows candidate-level ward breakdown toggles for citywide races', () => {
     const allWardRace = buildRace({
-      race: 'Ward Councilor (All Wards)',
+      election: 'SCHOOL',
+      race: 'School Board',
       scope: 'CITYWIDE',
       ward: 'ALL',
       totalVotes: 350,
@@ -211,14 +212,12 @@ describe('RaceCard', () => {
     fireEvent.click(screen.getByRole('button', { name: /hide ward breakdown for andrew faunce/i }));
     expect(screen.queryByText('Ward 1')).not.toBeInTheDocument();
     expect(screen.queryByText('Ward 2')).not.toBeInTheDocument();
-
-    expect(screen.getByRole('button', { name: /^show ward breakdown$/i })).toBeInTheDocument();
-    fireEvent.click(screen.getByRole('button', { name: /^show ward breakdown$/i }));
-    expect(screen.getByRole('heading', { name: /^Ward 1$/i })).toBeInTheDocument();
-    expect(screen.getByRole('heading', { name: /^Ward 2$/i })).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /^show ward breakdown$/i })).not.toBeInTheDocument();
 
     rerender(<RaceCard race={citySection.keyRaces[0]} electionStatus="REPORTED" />);
     expect(screen.queryByRole('button', { name: /show ward breakdown for andrew faunce/i })).not.toBeInTheDocument();
     expect(screen.queryByRole('button', { name: /^show ward breakdown$/i })).not.toBeInTheDocument();
   });
 });
+
+
