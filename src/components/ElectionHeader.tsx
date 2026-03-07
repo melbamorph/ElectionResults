@@ -1,3 +1,4 @@
+import { appTheme } from '../theme';
 import { formatUpdatedTimestamp } from '../utils/format';
 
 interface ElectionHeaderProps {
@@ -11,11 +12,9 @@ export function ElectionHeader({ lastUpdated, overallFinal, error }: ElectionHea
     <header className="rounded-2xl border border-line bg-white px-6 py-8 shadow-card animate-rise">
       <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
         <div>
-          <p className="text-sm font-display uppercase tracking-[0.16em] text-slate">City of Lebanon, New Hampshire</p>
-          <h1 className="mt-2 font-display text-3xl font-semibold text-ink md:text-5xl">Municipal Election Results</h1>
-          <p className="mt-2 max-w-2xl text-sm text-slate md:text-base">
-            Live unofficial results from published town election spreadsheets.
-          </p>
+          <p className="text-sm font-display uppercase tracking-[0.16em] text-slate">{appTheme.locationLabel}</p>
+          <h1 className="mt-2 font-display text-3xl font-semibold text-ink md:text-5xl">{appTheme.dashboardHeading}</h1>
+          <p className="mt-2 max-w-2xl text-sm text-slate md:text-base">{appTheme.dashboardSubheading}</p>
         </div>
         <div className="flex flex-col gap-2">
           <p className="text-sm text-slate">Last updated: {formatUpdatedTimestamp(lastUpdated)}</p>
