@@ -20,11 +20,14 @@ function isRelativePath(url: string): boolean {
   return url.startsWith('/');
 }
 
-function isAllowedHost(hostname: string, allowedHosts: string[]): boolean {
+function isSameHostOrSubdomain(hostname: string, expectedHost: string): boolean {
   const normalizedHost = hostname.toLowerCase();
-  return allowedHosts.some(
-    (allowedHost) => normalizedHost === allowedHost || normalizedHost.endsWith(`.${allowedHost}`),
-  );
+  const normalizedExpectedHost = expectedHost.toLowerCase();
+  return normalizedHost === normalizedExpectedHost || normalizedHost.endsWith(`.${normalizedExpectedHost}`);
+}
+
+function isAllowedHost(hostname: string, allowedHosts: string[]): boolean {
+  return allowedHosts.some((allowedHost) => isSameHostOrSubdomain(hostname, allowedHost));
 }
 
 export function validateCsvEndpoint(
@@ -58,7 +61,7 @@ export function validateCsvEndpoint(
     );
   }
 
-  if (parsed.hostname.endsWith('google.com')) {
+  if (isSameHostOrSubdomain(parsed.hostname, 'google.com')) {
     const outputFormat = parsed.searchParams.get('output');
     if (outputFormat && outputFormat.toLowerCase() !== 'csv') {
       throw new Error(`Google Sheets endpoint must use output=csv for ${endpointName}.`);
