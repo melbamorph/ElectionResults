@@ -139,7 +139,7 @@ describe('App ward filtering', () => {
     expect(screen.getByText('Ward Councilor Ward 2')).toBeInTheDocument();
     expect(screen.getByText('City Councilor At Large')).toBeInTheDocument();
     expect(screen.getByText('Question Number One')).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /^reset$/i })).toBeDisabled();
+    expect(screen.getByRole('button', { name: /^clear ward filter$/i })).toBeDisabled();
 
     await user.click(screen.getByRole('button', { name: /show ward 1 ballot items/i }));
 
@@ -147,9 +147,9 @@ describe('App ward filtering', () => {
     expect(screen.queryByText('Ward Councilor Ward 2')).not.toBeInTheDocument();
     expect(screen.getByText('City Councilor At Large')).toBeInTheDocument();
     expect(screen.getByText('Question Number One')).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /^reset$/i })).toBeEnabled();
+    expect(screen.getByRole('button', { name: /^clear ward filter$/i })).toBeEnabled();
 
-    await user.click(screen.getByRole('button', { name: /^reset$/i }));
+    await user.click(screen.getByRole('button', { name: /^clear ward filter$/i }));
 
     expect(screen.getByText('Ward Councilor Ward 2')).toBeInTheDocument();
   });
