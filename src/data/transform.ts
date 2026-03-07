@@ -37,6 +37,31 @@ const RACE_CONFIG_HEADERS = [
   'enabled',
 ];
 
+const WRITE_INS_LABEL = 'Write-Ins';
+const WRITE_INS_PATTERN = /^write[\s-]*ins?$/i;
+
+function normalizeCandidateName(value: string): string {
+  const normalized = value.trim();
+  return WRITE_INS_PATTERN.test(normalized) ? WRITE_INS_LABEL : normalized;
+}
+
+function normalizeWriteInWinnerName(value: string | undefined): string | null {
+  if (typeof value !== 'string') {
+    return null;
+  }
+
+  const normalized = value.trim();
+  return normalized.length > 0 ? normalized : null;
+}
+
+function getDisplayCandidateName(candidate: string, isWinner: boolean, writeInWinnerName: string | null): string {
+  if (candidate !== WRITE_INS_LABEL || !isWinner || !writeInWinnerName) {
+    return candidate;
+  }
+
+  return `${WRITE_INS_LABEL} (${writeInWinnerName})`;
+}
+
 function assertElection(value: string, field: string): ElectionId {
   const normalized = value.trim().toUpperCase() as ElectionId;
   if (!VALID_ELECTIONS.includes(normalized)) {
@@ -86,6 +111,7 @@ export function parseResultsCsv(text: string): ResultRow[] {
     ward: normalizeWard(row.ward),
     candidate: row.candidate,
     votes: parseIntSafe(row.votes, 'results.votes'),
+    write_in_winner_name: normalizeWriteInWinnerName(row.write_in_winner_name),
   }));
 }
 
@@ -138,8 +164,25 @@ function buildCandidates(
   electionStatus: ElectionStatus,
 ): CandidateResult[] {
   const totalsByCandidate = new Map<string, number>();
+  let writeInWinnerName: string | null = null;
+  let hasExplicitWriteInsRow = false;
+
   for (const row of raceResults) {
-    totalsByCandidate.set(row.candidate, (totalsByCandidate.get(row.candidate) || 0) + row.votes);
+    const candidateName = normalizeCandidateName(row.candidate);
+    totalsByCandidate.set(candidateName, (totalsByCandidate.get(candidateName) || 0) + row.votes);
+
+    if (candidateName !== WRITE_INS_LABEL) {
+      continue;
+    }
+
+    hasExplicitWriteInsRow = true;
+    if (row.write_in_winner_name) {
+      writeInWinnerName = row.write_in_winner_name;
+    }
+  }
+
+  if (raceType === 'office' && !hasExplicitWriteInsRow) {
+    totalsByCandidate.set(WRITE_INS_LABEL, 0);
   }
 
   const totalVotes = Array.from(totalsByCandidate.values()).reduce((sum, v) => sum + v, 0);
@@ -155,16 +198,22 @@ function buildCandidates(
 
   const canCallWinners = electionStatus === 'REPORTED' || electionStatus === 'FINAL';
 
-  return sortedCandidates.map((item, index) => ({
-    candidate: item.candidate,
-    votes: item.votes,
-    percentage: totalVotes > 0 ? (item.votes / totalVotes) * 100 : 0,
-    rank: index + 1,
-    isLeader: index === 0,
-    isWinner: canCallWinners && raceType === 'office' && index < seats,
-  }));
-}
+  return sortedCandidates.map((item, index) => {
+    let isWinner = canCallWinners && raceType === 'office' && index < seats;
+    if (item.candidate === WRITE_INS_LABEL && !hasExplicitWriteInsRow && item.votes === 0) {
+      isWinner = false;
+    }
 
+    return {
+      candidate: getDisplayCandidateName(item.candidate, isWinner, writeInWinnerName),
+      votes: item.votes,
+      percentage: totalVotes > 0 ? (item.votes / totalVotes) * 100 : 0,
+      rank: index + 1,
+      isLeader: index === 0,
+      isWinner,
+    };
+  });
+}
 function buildWardBreakdown(raceResults: ResultRow[]): WardBreakdownRow[] {
   const wardRows = raceResults.filter((row) => row.ward !== 'ALL');
   if (wardRows.length === 0) {
@@ -180,7 +229,8 @@ function buildWardBreakdown(raceResults: ResultRow[]): WardBreakdownRow[] {
     if (!wardCandidates) {
       continue;
     }
-    wardCandidates.set(row.candidate, (wardCandidates.get(row.candidate) || 0) + row.votes);
+    const candidateName = normalizeCandidateName(row.candidate);
+    wardCandidates.set(candidateName, (wardCandidates.get(candidateName) || 0) + row.votes);
   }
 
   return Array.from(byWard.entries())
@@ -361,3 +411,4 @@ export function normalizeDashboardData(args: {
     overallFinal,
   };
 }
+

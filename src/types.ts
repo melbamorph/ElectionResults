@@ -12,6 +12,7 @@ export interface ResultRow {
   ward: string;
   candidate: string;
   votes: number;
+  write_in_winner_name?: string | null;
 }
 
 export interface WardStatusRow {
@@ -114,3 +115,4 @@ export interface CsvEndpoints {
   turnoutUrl: string;
   raceConfigUrl: string;
 }
+

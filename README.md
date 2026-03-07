@@ -59,6 +59,16 @@ Optional security env vars:
 election,race,ward,candidate,votes
 ```
 
+Optional `results.csv` column (office races only):
+
+```csv
+write_in_winner_name
+```
+
+- Keep the `candidate` value as `Write-Ins` (or `Write In`) and enter the total in `votes`.
+- If that write-in line is a called winner, set `write_in_winner_name` to display the winner's name.
+- Office races always render a `Write-Ins` line (defaulting to `0` when no row is provided).
+
 `ward_status.csv`
 
 ```csv
@@ -183,3 +193,4 @@ Local/offline sample CSV files are in:
 ## 8. GitHub Hardening Checklist
 
 See `docs/GITHUB_SETUP.md` for the exact repository settings and election-night validation checklist.
+
