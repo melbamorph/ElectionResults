@@ -26,6 +26,10 @@ function isLibraryTrusteeRace(race: NormalizedRace): boolean {
   return race.raceType === 'office' && /library/i.test(race.race) && /trustee/i.test(race.race);
 }
 
+function isElectionWorkerRace(race: NormalizedRace): boolean {
+  return race.raceType === 'office' && /election\s*worker/i.test(race.race);
+}
+
 function CompactRaceGroup({
   title,
   subtitle,
@@ -77,6 +81,7 @@ export function ElectionSection({ section, wardStatuses = [] }: ElectionSectionP
       )
     : [];
   const libraryTrusteeRaces = isCity ? section.races.filter((race) => isLibraryTrusteeRace(race)) : [];
+  const electionWorkerRaces = isCity ? section.races.filter((race) => isElectionWorkerRace(race)) : [];
 
   const atLargeAndLibraryRaces = [...atLargeCouncilRaces];
   for (const race of libraryTrusteeRaces) {
@@ -89,7 +94,11 @@ export function ElectionSection({ section, wardStatuses = [] }: ElectionSectionP
   const groupedRaceNames = new Set([...wardCouncilRaces, ...atLargeAndLibraryRaces].map((race) => race.race));
   const otherKeyRaces = section.keyRaces.filter((race) => !groupedRaceNames.has(race.race));
   const visibleOffices = isCity
-    ? section.offices.filter((race) => !libraryTrusteeRaces.some((libraryRace) => libraryRace.race === race.race))
+    ? section.offices.filter(
+        (race) =>
+          !libraryTrusteeRaces.some((libraryRace) => libraryRace.race === race.race) &&
+          !electionWorkerRaces.some((electionWorkerRace) => electionWorkerRace.race === race.race),
+      )
     : section.offices;
 
   return (
@@ -171,6 +180,17 @@ export function ElectionSection({ section, wardStatuses = [] }: ElectionSectionP
         </div>
       )}
 
+      {isCity && electionWorkerRaces.length > 0 && (
+        <CompactRaceGroup
+          title="Election Workers"
+          subtitle="Election worker contests grouped ahead of ballot questions"
+          races={electionWorkerRaces}
+          electionStatus={section.status}
+          panelClassName="border-smoke/25 bg-mist"
+          accentClassName="bg-smoke"
+        />
+      )}
+
       {section.ballots.length > 0 && (
         <div className="space-y-3">
           <h3 className="font-display text-lg font-semibold text-ink">
@@ -192,5 +212,4 @@ export function ElectionSection({ section, wardStatuses = [] }: ElectionSectionP
     </section>
   );
 }
-
 
