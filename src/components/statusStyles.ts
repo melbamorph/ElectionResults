@@ -5,10 +5,23 @@ export function statusChipClass(status: ElectionStatus): string {
     case 'FINAL':
       return 'bg-winner/15 text-winner border-winner/30';
     case 'REPORTED':
-      return 'bg-leader/15 text-leader border-leader/30';
+      return 'bg-clay/15 text-clay border-clay/30';
     case 'COUNTING':
       return 'bg-alert/15 text-alert border-alert/30';
     default:
-      return 'bg-slate-200 text-slate-700 border-slate-300';
+      return 'bg-smoke/10 text-smoke border-smoke/30';
+  }
+}
+
+export function statusSymbol(status: ElectionStatus): string {
+  switch (status) {
+    case 'FINAL':
+      return '✓';
+    case 'REPORTED':
+      return '✓';
+    case 'COUNTING':
+      return '⏳';
+    default:
+      return '○';
   }
 }

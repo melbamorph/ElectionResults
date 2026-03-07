@@ -1,16 +1,18 @@
+import { appTheme } from '../theme';
 import { DashboardData } from '../types';
 
 export const dashboardFixture: DashboardData = {
   sections: {
     CITY: {
       id: 'CITY',
-      title: 'City of Lebanon Municipal Election',
+      title: appTheme.citySectionTitle,
       status: 'REPORTED',
       keyRaces: [
         {
           election: 'CITY',
           race: 'City Councilor At Large',
           raceType: 'office',
+          raceGroup: null,
           scope: 'CITYWIDE',
           ward: 'ALL',
           seats: 2,
@@ -27,11 +29,30 @@ export const dashboardFixture: DashboardData = {
       ],
       offices: [],
       ballots: [],
-      races: [],
+      races: [
+        {
+          election: 'CITY',
+          race: 'City Councilor At Large',
+          raceType: 'office',
+          raceGroup: null,
+          scope: 'CITYWIDE',
+          ward: 'ALL',
+          seats: 2,
+          sortOrder: 1,
+          showInKeyRaces: true,
+          totalVotes: 900,
+          candidates: [
+            { candidate: 'Paul Roberts', votes: 340, percentage: 37.8, rank: 1, isLeader: true, isWinner: true },
+            { candidate: 'Ronald Smith', votes: 325, percentage: 36.1, rank: 2, isLeader: false, isWinner: true },
+            { candidate: 'Kellen Appleton', votes: 235, percentage: 26.1, rank: 3, isLeader: false, isWinner: false },
+          ],
+          wardBreakdown: [],
+        },
+      ],
     },
     SCHOOL: {
       id: 'SCHOOL',
-      title: 'Lebanon School District Election',
+      title: appTheme.schoolSectionTitle,
       status: 'PENDING',
       keyRaces: [],
       offices: [],

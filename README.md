@@ -1,6 +1,6 @@
-# Lebanon Election Results Dashboard
+# Election Results Dashboard
 
-Static municipal election-night dashboard for the City of Lebanon, New Hampshire.
+Static municipal election-night dashboard with fictional default branding for demo and template use.
 
 - Frontend only: React + Vite + Tailwind CSS
 - Data source: published Google Sheets CSV tabs
@@ -22,7 +22,13 @@ npm install
 cp .env.example .env
 ```
 
-4. Start local dev server:
+4. Set your dashboard location theme in `.env` (optional):
+
+```bash
+VITE_THEME_LOCATION=City of Mos Eisley, Tatooine
+```
+
+5. Start local dev server:
 
 ```bash
 npm run dev
@@ -42,7 +48,7 @@ Publish each tab to CSV from Google Sheets and set these env vars:
 
 Optional security env vars:
 
-- `VITE_ALLOWED_CSV_HOSTS` (default: `docs.google.com,docs.googleusercontent.com`)
+- `VITE_ALLOWED_CSV_HOSTS` (default: `docs.google.com,googleusercontent.com`)
 - `VITE_ALLOW_ANY_CSV_HOST` (default: `false`; set to `true` only for trusted non-Google hosts)
 
 ### Required CSV Schemas
@@ -50,8 +56,21 @@ Optional security env vars:
 `results.csv`
 
 ```csv
-election,race,ward,candidate,votes
+election,race,ward,candidate,votes[,ward_1,ward_2,ward_3][,write_in_winner_name]
 ```
+
+Optional `results.csv` columns:
+
+```csv
+ward_1,ward_2,ward_3,write_in_winner_name
+```
+
+- `votes` remains the total for that candidate/choice.
+- `ward_1`, `ward_2`, and `ward_3` are optional per-ward breakout columns used to build ward breakdown cards (typically on citywide races).
+- If ward columns are present, enter numeric values (use `0` when needed, leave blank when not applicable).
+- Keep the `candidate` value as `Write-Ins` (or `Write In`) and enter the total in `votes`.
+- If that write-in line is a called winner, set `write_in_winner_name` to display the winner's name.
+- Office races always render a `Write-Ins` line (defaulting to `0` when no row is provided).
 
 `ward_status.csv`
 
@@ -74,7 +93,7 @@ election,ward,ballots_counted,registered_voters
 `race_config.csv`
 
 ```csv
-election,race,race_type,scope,ward,seats,sort_order,show_in_key_races,enabled
+election,race,race_type,race_group,scope,ward,seats,sort_order,show_in_key_races,enabled
 ```
 
 ### Status Values
@@ -87,8 +106,9 @@ election,race,race_type,scope,ward,seats,sort_order,show_in_key_races,enabled
 ### Notes
 
 - `race_config.csv` is authoritative for race order, race type, seat count, and key-race flags.
+- `race_group` is optional. Use it to create sub-groups inside the two main containers (`Elected Positions` and `Ballot Questions`), such as `Democratic Ballot` and `Republican Ballot`.
 - CITY turnout summary uses ward rows (`1`, `2`, `3`) and ignores CITY `ALL` when ward rows are present.
-- School races are citywide only and do not display ward breakdowns.
+- School races are citywide only; ward breakdowns display when per-ward columns are provided in results.
 
 ## 3. Build and Preview
 
@@ -167,14 +187,13 @@ Current test coverage includes:
 - Ward tracker and ward-breakdown UI behavior
 - Auto-refresh polling behavior and stale-data fallback
 
-## 7. Existing Sheet Templates
+## 7. Sample CSV Templates
 
-Your original source templates remain in:
+Local/offline sample CSV files are in:
 
-- `Google Sheet/`
-
-Use them as operational entry templates for election staff.
+- `public/mock/`
 
 ## 8. GitHub Hardening Checklist
 
 See `docs/GITHUB_SETUP.md` for the exact repository settings and election-night validation checklist.
+
