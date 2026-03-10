@@ -90,7 +90,7 @@ const citySection: ElectionSectionData = {
 };
 
 describe('ElectionSection', () => {
-  it('renders two top-level containers with generic subgrouping', () => {
+  it('renders municipal ballot races in articles, ballot questions, and amendments containers', () => {
     const democraticGovernor = buildRace({
       race: 'Governor',
       raceGroup: 'Democratic Ballot',
@@ -106,18 +106,32 @@ describe('ElectionSection', () => {
       raceGroup: null,
       sortOrder: 3,
     });
+    const budgetArticle = buildRace({
+      race: 'Article 2',
+      raceType: 'ballot',
+      raceGroup: 'Town Articles',
+      sortOrder: 4,
+      showInKeyRaces: false,
+    });
     const constitutionalAmendment = buildRace({
       race: 'Constitutional Amendment 1',
       raceType: 'ballot',
+      raceGroup: 'State Amendments',
+      sortOrder: 5,
+      showInKeyRaces: false,
+    });
+    const stateQuestion = buildRace({
+      race: 'State Question 1',
+      raceType: 'ballot',
       raceGroup: 'State Questions',
-      sortOrder: 4,
+      sortOrder: 6,
       showInKeyRaces: false,
     });
     const localQuestion = buildRace({
       race: 'Local Question 2',
       raceType: 'ballot',
       raceGroup: null,
-      sortOrder: 5,
+      sortOrder: 7,
       showInKeyRaces: false,
     });
 
@@ -127,25 +141,35 @@ describe('ElectionSection', () => {
       status: 'REPORTED',
       keyRaces: [democraticGovernor, republicanGovernor],
       offices: [nonpartisanClerk],
-      ballots: [constitutionalAmendment, localQuestion],
-      races: [democraticGovernor, republicanGovernor, nonpartisanClerk, constitutionalAmendment, localQuestion],
+      ballots: [budgetArticle, constitutionalAmendment, stateQuestion, localQuestion],
+      races: [
+        democraticGovernor,
+        republicanGovernor,
+        nonpartisanClerk,
+        budgetArticle,
+        constitutionalAmendment,
+        stateQuestion,
+        localQuestion,
+      ],
     };
 
     render(<ElectionSection section={section} />);
 
-    const electedPositionsHeading = screen.getByRole('heading', { name: /^Elected Positions$/i });
-    const ballotQuestionsHeading = screen.getByRole('heading', { name: /^Ballot Questions$/i });
-
-    expect(electedPositionsHeading).toBeInTheDocument();
-    expect(ballotQuestionsHeading).toBeInTheDocument();
+    expect(screen.getAllByRole('heading', { level: 3 }).map((heading) => heading.textContent)).toEqual([
+      'Elected Positions',
+      'Articles',
+      'Ballot Questions',
+      'Amendments',
+    ]);
 
     expect(screen.getByRole('heading', { name: /^Democratic Ballot$/i })).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: /^Republican Ballot$/i })).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: /^Other Positions$/i })).toBeInTheDocument();
-    expect(screen.getByRole('heading', { name: /^State Questions$/i })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: /^Town Articles$/i })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: /^State Amendments$/i })).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: /^Other Questions$/i })).toBeInTheDocument();
 
-    const electedContainer = electedPositionsHeading.closest('section');
+    const electedContainer = screen.getByRole('heading', { name: /^Elected Positions$/i }).closest('section');
     expect(electedContainer).not.toBeNull();
     if (electedContainer) {
       expect(within(electedContainer).getByText('Governor')).toBeInTheDocument();
@@ -153,11 +177,77 @@ describe('ElectionSection', () => {
       expect(within(electedContainer).getByText('Town Clerk')).toBeInTheDocument();
     }
 
-    const ballotContainer = ballotQuestionsHeading.closest('section');
+    const articlesContainer = screen.getByRole('heading', { name: /^Articles$/i }).closest('section');
+    expect(articlesContainer).not.toBeNull();
+    if (articlesContainer) {
+      expect(within(articlesContainer).getByText('Article 2')).toBeInTheDocument();
+      expect(within(articlesContainer).queryByText('Local Question 2')).not.toBeInTheDocument();
+      expect(within(articlesContainer).queryByText('Constitutional Amendment 1')).not.toBeInTheDocument();
+    }
+
+    const ballotContainer = screen.getByRole('heading', { name: /^Ballot Questions$/i }).closest('section');
     expect(ballotContainer).not.toBeNull();
     if (ballotContainer) {
-      expect(within(ballotContainer).getByText('Constitutional Amendment 1')).toBeInTheDocument();
+      expect(within(ballotContainer).getByText('State Question 1')).toBeInTheDocument();
       expect(within(ballotContainer).getByText('Local Question 2')).toBeInTheDocument();
+      expect(within(ballotContainer).queryByText('Article 2')).not.toBeInTheDocument();
+      expect(within(ballotContainer).queryByText('Constitutional Amendment 1')).not.toBeInTheDocument();
+    }
+
+    const amendmentsContainer = screen.getByRole('heading', { name: /^Amendments$/i }).closest('section');
+    expect(amendmentsContainer).not.toBeNull();
+    if (amendmentsContainer) {
+      expect(within(amendmentsContainer).getByText('Constitutional Amendment 1')).toBeInTheDocument();
+      expect(within(amendmentsContainer).queryByText('Article 2')).not.toBeInTheDocument();
+      expect(within(amendmentsContainer).queryByText('Local Question 2')).not.toBeInTheDocument();
+    }
+  });
+
+  it('renames school ballot questions to articles', () => {
+    const schoolBoard = buildRace({
+      election: 'SCHOOL',
+      race: 'School Board',
+      raceGroup: 'School Offices',
+      sortOrder: 1,
+    });
+    const schoolArticle = buildRace({
+      election: 'SCHOOL',
+      race: 'Article 1',
+      raceType: 'ballot',
+      raceGroup: 'School Warrant',
+      sortOrder: 2,
+      showInKeyRaces: false,
+    });
+    const schoolQuestion = buildRace({
+      election: 'SCHOOL',
+      race: 'Budget Question',
+      raceType: 'ballot',
+      raceGroup: null,
+      sortOrder: 3,
+      showInKeyRaces: false,
+    });
+
+    const section: ElectionSectionData = {
+      id: 'SCHOOL',
+      title: appTheme.schoolSectionTitle,
+      status: 'REPORTED',
+      keyRaces: [schoolBoard],
+      offices: [],
+      ballots: [schoolArticle, schoolQuestion],
+      races: [schoolBoard, schoolArticle, schoolQuestion],
+    };
+
+    render(<ElectionSection section={section} />);
+
+    expect(screen.getByRole('heading', { name: /^Articles$/i })).toBeInTheDocument();
+    expect(screen.queryByRole('heading', { name: /^Ballot Questions$/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole('heading', { name: /^Amendments$/i })).not.toBeInTheDocument();
+
+    const articlesContainer = screen.getByRole('heading', { name: /^Articles$/i }).closest('section');
+    expect(articlesContainer).not.toBeNull();
+    if (articlesContainer) {
+      expect(within(articlesContainer).getByText('Article 1')).toBeInTheDocument();
+      expect(within(articlesContainer).getByText('Budget Question')).toBeInTheDocument();
     }
   });
 });
@@ -219,5 +309,4 @@ describe('RaceCard', () => {
     expect(screen.queryByRole('button', { name: /^show ward breakdown$/i })).not.toBeInTheDocument();
   });
 });
-
 

@@ -7,6 +7,8 @@ interface ElectionSectionProps {
   section: ElectionSectionData;
 }
 
+type BallotSectionId = 'articles' | 'questions' | 'amendments';
+
 interface RaceTypeContainerProps {
   title: string;
   subtitle: string;
@@ -51,6 +53,25 @@ function buildRaceGroups(races: NormalizedRace[]): RaceGroup[] {
   }
 
   return Array.from(grouped.values());
+}
+
+function normalizeBallotLabel(value: string | null | undefined): string {
+  return typeof value === 'string' ? value.trim().toLowerCase() : '';
+}
+
+function getBallotSectionId(race: NormalizedRace): BallotSectionId {
+  const groupLabel = normalizeBallotLabel(race.raceGroup);
+  const raceLabel = normalizeBallotLabel(race.race);
+
+  if (groupLabel.includes('amendment') || raceLabel.includes('amendment')) {
+    return 'amendments';
+  }
+
+  if (groupLabel.includes('article') || raceLabel.includes('article')) {
+    return 'articles';
+  }
+
+  return 'questions';
 }
 
 function RaceTypeContainer({
@@ -107,7 +128,11 @@ function RaceTypeContainer({
 
 export function ElectionSection({ section }: ElectionSectionProps) {
   const offices = section.races.filter((race) => race.raceType === 'office');
-  const ballotQuestions = section.races.filter((race) => race.raceType === 'ballot');
+  const ballotRaces = section.races.filter((race) => race.raceType === 'ballot');
+  const articleRaces = ballotRaces.filter((race) => getBallotSectionId(race) === 'articles');
+  const questionRaces = ballotRaces.filter((race) => getBallotSectionId(race) === 'questions');
+  const amendmentRaces = ballotRaces.filter((race) => getBallotSectionId(race) === 'amendments');
+  const isSchoolSection = section.id === 'SCHOOL';
 
   return (
     <section className="space-y-5 rounded-2xl border border-line bg-white/70 p-6">
@@ -133,15 +158,49 @@ export function ElectionSection({ section }: ElectionSectionProps) {
           emptyMessage="No elected position races are configured for this election."
         />
 
-        <RaceTypeContainer
-          title="Ballot Questions"
-          subtitle="Articles, measures, and yes/no questions"
-          races={ballotQuestions}
-          electionStatus={section.status}
-          accentClassName="bg-clay"
-          fallbackGroupTitle="Other Questions"
-          emptyMessage="No ballot questions are configured for this election."
-        />
+        {isSchoolSection ? (
+          <RaceTypeContainer
+            title="Articles"
+            subtitle="Articles, measures, and yes/no questions"
+            races={ballotRaces}
+            electionStatus={section.status}
+            accentClassName="bg-clay"
+            fallbackGroupTitle="Other Articles"
+            emptyMessage="No articles are configured for this election."
+          />
+        ) : (
+          <>
+            <RaceTypeContainer
+              title="Articles"
+              subtitle="Municipal articles and warrant items"
+              races={articleRaces}
+              electionStatus={section.status}
+              accentClassName="bg-clay"
+              fallbackGroupTitle="Other Articles"
+              emptyMessage="No articles are configured for this election."
+            />
+
+            <RaceTypeContainer
+              title="Ballot Questions"
+              subtitle="Measures and yes/no questions"
+              races={questionRaces}
+              electionStatus={section.status}
+              accentClassName="bg-clay"
+              fallbackGroupTitle="Other Questions"
+              emptyMessage="No ballot questions are configured for this election."
+            />
+
+            <RaceTypeContainer
+              title="Amendments"
+              subtitle="Charter and constitutional amendments"
+              races={amendmentRaces}
+              electionStatus={section.status}
+              accentClassName="bg-clay"
+              fallbackGroupTitle="Other Amendments"
+              emptyMessage="No amendments are configured for this election."
+            />
+          </>
+        )}
       </div>
     </section>
   );
