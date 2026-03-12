@@ -222,7 +222,8 @@ function buildCandidates(
   const canCallWinners = electionStatus === 'REPORTED' || electionStatus === 'FINAL';
 
   return sortedCandidates.map((item, index) => {
-    let isWinner = canCallWinners && raceType === 'office' && index < seats;
+    const winnerSlots = raceType === 'office' ? seats : 1;
+    let isWinner = canCallWinners && index < winnerSlots;
     if (item.candidate === WRITE_INS_LABEL && !hasExplicitWriteInsRow && item.votes === 0) {
       isWinner = false;
     }
@@ -481,4 +482,3 @@ export function normalizeDashboardData(args: {
     overallFinal,
   };
 }
-

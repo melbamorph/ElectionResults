@@ -134,8 +134,33 @@ CITY,Budget Question,ballot,,CITYWIDE,ALL,1,2,FALSE,TRUE
     expect(townClerk?.candidates[0]).toMatchObject({ candidate: 'Write-Ins (Jordan Lee)', votes: 125, isWinner: true });
 
     const budgetQuestion = data.sections.CITY.races.find((race) => race.race === 'Budget Question');
+    expect(budgetQuestion?.candidates[0]).toMatchObject({ candidate: 'Yes', votes: 210, isLeader: true, isWinner: true });
+    expect(budgetQuestion?.candidates[1]).toMatchObject({ candidate: 'No', votes: 180, isWinner: false });
     expect(budgetQuestion?.candidates.find((c) => c.candidate === 'Write-Ins')).toMatchObject({ votes: 3 });
     expect(budgetQuestion?.candidates.some((c) => c.candidate.includes('(Jordan Lee)'))).toBe(false);
   });
-});
 
+  it('keeps race entries sorted by descending votes while ballots are still counting', () => {
+    const countingResultsCsv = `election,race,ward,candidate,votes
+CITY,Budget Question,ALL,Write-Ins,3
+CITY,Budget Question,ALL,No,180
+CITY,Budget Question,ALL,Yes,210
+`;
+
+    const countingRaceConfigCsv = `election,race,race_type,race_group,scope,ward,seats,sort_order,show_in_key_races,enabled
+CITY,Budget Question,ballot,,CITYWIDE,ALL,1,1,FALSE,TRUE
+`;
+
+    const data = normalizeDashboardData({
+      results: parseResultsCsv(countingResultsCsv),
+      wardStatuses: parseWardStatusCsv(wardStatusCsv),
+      electionStatuses: parseElectionStatusCsv('election,status\nCITY,COUNTING\nSCHOOL,PENDING\n'),
+      turnout: parseTurnoutCsv(turnoutCsv),
+      raceConfig: parseRaceConfigCsv(countingRaceConfigCsv),
+    });
+
+    const budgetQuestion = data.sections.CITY.races.find((race) => race.race === 'Budget Question');
+    expect(budgetQuestion?.candidates.map((candidate) => candidate.candidate)).toEqual(['Yes', 'No', 'Write-Ins']);
+    expect(budgetQuestion?.candidates[0]).toMatchObject({ votes: 210, isLeader: true, isWinner: false });
+  });
+});
