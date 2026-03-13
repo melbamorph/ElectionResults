@@ -312,7 +312,7 @@ describe('ElectionSection', () => {
 
 describe('RaceCard', () => {
   it('shows total votes beneath the race title', () => {
-    render(<RaceCard race={citySection.keyRaces[0]} electionStatus="REPORTED" />);
+    render(<RaceCard race={citySection.keyRaces[0]} />);
 
     expect(screen.getByText(/Total votes: 215/i)).toBeInTheDocument();
   });
@@ -348,7 +348,7 @@ describe('RaceCard', () => {
       ],
     });
 
-    const { rerender } = render(<RaceCard race={allWardRace} electionStatus="REPORTED" />);
+    const { rerender } = render(<RaceCard race={allWardRace} />);
 
     expect(screen.getByRole('button', { name: /show ward breakdown for andrew faunce/i })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /show ward breakdown for jamie stone/i })).toBeInTheDocument();
@@ -362,7 +362,7 @@ describe('RaceCard', () => {
     expect(screen.queryByText('Ward 2')).not.toBeInTheDocument();
     expect(screen.queryByRole('button', { name: /^show ward breakdown$/i })).not.toBeInTheDocument();
 
-    rerender(<RaceCard race={citySection.keyRaces[0]} electionStatus="REPORTED" />);
+    rerender(<RaceCard race={citySection.keyRaces[0]} />);
     expect(screen.queryByRole('button', { name: /show ward breakdown for andrew faunce/i })).not.toBeInTheDocument();
     expect(screen.queryByRole('button', { name: /^show ward breakdown$/i })).not.toBeInTheDocument();
   });
@@ -379,7 +379,7 @@ describe('RaceCard', () => {
       ],
     });
 
-    render(<RaceCard race={multiCandidateRace} electionStatus="REPORTED" compact layoutMode="responsive-list" />);
+    render(<RaceCard race={multiCandidateRace} compact layoutMode="responsive-list" />);
 
     expect(screen.getByText('Sam Lee')).toBeInTheDocument();
     expect(screen.getByText('Pat Morgan')).toBeInTheDocument();

@@ -1,7 +1,5 @@
-import { ElectionSectionData, ElectionStatus, NormalizedRace } from '../types';
-import { titleCase } from '../utils/format';
+import { ElectionSectionData, NormalizedRace } from '../types';
 import { RaceCard } from './RaceCard';
-import { statusChipClass } from './statusStyles';
 
 interface ElectionSectionProps {
   section: ElectionSectionData;
@@ -13,7 +11,6 @@ interface RaceTypeContainerProps {
   title: string;
   subtitle: string;
   races: NormalizedRace[];
-  electionStatus: ElectionStatus;
   accentClassName: string;
   fallbackGroupTitle: string;
   emptyMessage: string;
@@ -78,7 +75,6 @@ function RaceTypeContainer({
   title,
   subtitle,
   races,
-  electionStatus,
   accentClassName,
   fallbackGroupTitle,
   emptyMessage,
@@ -113,7 +109,6 @@ function RaceTypeContainer({
                 <RaceCard
                   key={`${race.election}-${race.race}`}
                   race={race}
-                  electionStatus={electionStatus}
                   compact
                   accentClassName={accentClassName}
                   layoutMode="responsive-list"
@@ -137,15 +132,8 @@ export function ElectionSection({ section }: ElectionSectionProps) {
 
   return (
     <section className="space-y-5 rounded-2xl border border-line bg-white/70 p-6">
-      <header className="flex flex-wrap items-center justify-between gap-3">
+      <header>
         <h2 className="font-display text-2xl font-semibold text-ink">{section.title}</h2>
-        <span
-          className={`inline-flex rounded-full border px-3 py-1 text-xs font-semibold uppercase tracking-wide ${statusChipClass(
-            section.status,
-          )}`}
-        >
-          {titleCase(section.status)}
-        </span>
       </header>
 
       <div className="space-y-4">
@@ -153,7 +141,6 @@ export function ElectionSection({ section }: ElectionSectionProps) {
           title="Elected Positions"
           subtitle="Candidate contests where winners are seated"
           races={offices}
-          electionStatus={section.status}
           accentClassName="bg-sage"
           fallbackGroupTitle="Other Positions"
           emptyMessage="No elected position races are configured for this election."
@@ -164,7 +151,6 @@ export function ElectionSection({ section }: ElectionSectionProps) {
             title="Articles"
             subtitle="Articles, measures, and yes/no questions"
             races={ballotRaces}
-            electionStatus={section.status}
             accentClassName="bg-clay"
             fallbackGroupTitle="Other Articles"
             emptyMessage="No articles are configured for this election."
@@ -175,7 +161,6 @@ export function ElectionSection({ section }: ElectionSectionProps) {
               title="Articles"
               subtitle="Municipal articles and warrant items"
               races={articleRaces}
-              electionStatus={section.status}
               accentClassName="bg-clay"
               fallbackGroupTitle="Other Articles"
               emptyMessage="No articles are configured for this election."
@@ -185,7 +170,6 @@ export function ElectionSection({ section }: ElectionSectionProps) {
               title="Ballot Questions"
               subtitle="Measures and yes/no questions"
               races={questionRaces}
-              electionStatus={section.status}
               accentClassName="bg-clay"
               fallbackGroupTitle="Other Questions"
               emptyMessage="No ballot questions are configured for this election."
@@ -195,7 +179,6 @@ export function ElectionSection({ section }: ElectionSectionProps) {
               title="Amendments"
               subtitle="Charter and constitutional amendments"
               races={amendmentRaces}
-              electionStatus={section.status}
               accentClassName="bg-clay"
               fallbackGroupTitle="Other Amendments"
               emptyMessage="No amendments are configured for this election."

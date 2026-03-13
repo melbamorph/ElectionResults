@@ -1,12 +1,10 @@
 import { useMemo } from 'react';
-import { ElectionStatus, NormalizedRace } from '../types';
-import { formatNumber, titleCase } from '../utils/format';
+import { NormalizedRace } from '../types';
+import { formatNumber } from '../utils/format';
 import { CandidateRow } from './CandidateRow';
-import { statusChipClass } from './statusStyles';
 
 interface RaceCardProps {
   race: NormalizedRace;
-  electionStatus: ElectionStatus;
   compact?: boolean;
   accentClassName?: string;
   layoutMode?: 'card' | 'responsive-list';
@@ -19,7 +17,6 @@ function toWardSortValue(ward: string): number {
 
 export function RaceCard({
   race,
-  electionStatus,
   compact = false,
   accentClassName = 'bg-smoke/40',
   layoutMode = 'card',
@@ -72,7 +69,7 @@ export function RaceCard({
     >
       {compact && <div className={`mb-2 h-1 w-12 rounded-full ${accentClassName} ${isResponsiveList ? 'md:hidden' : ''}`} aria-hidden />}
 
-      <header className={isResponsiveList ? 'flex flex-col gap-2 md:gap-3 md:pr-6' : 'flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between'}>
+      <header className={isResponsiveList ? 'md:pr-6' : ''}>
         <div className="min-w-0">
           <h4 className={`font-display font-semibold text-ink ${compact ? 'text-base' : 'text-xl'}`}>{race.race}</h4>
           {isResponsiveList ? (
@@ -89,13 +86,6 @@ export function RaceCard({
             </>
           )}
         </div>
-        <span
-          className={`inline-flex w-fit rounded-full border font-semibold uppercase tracking-wide ${statusChipClass(
-            electionStatus,
-          )} ${compact || isResponsiveList ? 'px-2 py-0.5 text-[10px]' : 'px-3 py-1 text-xs'} ${isResponsiveList ? 'md:self-start md:text-[11px]' : ''}`}
-        >
-          {titleCase(electionStatus)}
-        </span>
       </header>
 
       <div

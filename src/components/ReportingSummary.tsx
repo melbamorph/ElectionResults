@@ -71,13 +71,9 @@ export function ReportingSummary({
           <h2 className="font-display text-xl font-semibold text-ink">Election Dashboard</h2>
           <p className="mt-2 text-sm text-slate">
             {summary.reportedWards} of {summary.totalWards} wards reporting ({formatPercent(summary.percentReporting, 0)})
+            {summary.isFinal ? ' Final ward reporting complete.' : ''}
           </p>
         </div>
-        {summary.isFinal && (
-          <p className="inline-flex rounded-full border border-winner/30 bg-winner/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-winner">
-            Ward Reporting Final
-          </p>
-        )}
       </div>
 
       <div className="mt-5 grid gap-4 sm:grid-cols-3">
