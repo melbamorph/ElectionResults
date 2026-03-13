@@ -385,5 +385,8 @@ describe('RaceCard', () => {
     expect(screen.getByText('Pat Morgan')).toBeInTheDocument();
     expect(screen.getByText('Robin Vale')).toBeInTheDocument();
     expect(screen.getByText(/Vote for 2/i)).toBeInTheDocument();
+
+    const candidateRow = screen.getByText('Sam Lee').closest('div.rounded-md');
+    expect(candidateRow?.className).toContain('md:grid-cols-[minmax(0,1.7fr)_minmax(150px,1fr)_9ch_6ch]');
   });
 });

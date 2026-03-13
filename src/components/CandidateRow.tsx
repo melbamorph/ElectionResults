@@ -31,7 +31,7 @@ export function CandidateRow({
         compact
           ? `rounded-md border border-line/70 bg-mist px-3 py-3 ${
               isResponsiveList
-                ? 'md:grid md:grid-cols-[minmax(0,1.7fr)_minmax(150px,1fr)_auto_auto] md:items-center md:gap-x-4 md:rounded-none md:border-0 md:bg-transparent md:px-0 md:py-3'
+                ? 'md:grid md:grid-cols-[minmax(0,1.7fr)_minmax(150px,1fr)_9ch_6ch] md:items-center md:gap-x-4 md:rounded-none md:border-0 md:bg-transparent md:px-0 md:py-3'
                 : ''
             }`
           : 'rounded-lg border border-line p-4'
@@ -55,7 +55,7 @@ export function CandidateRow({
           <p className={`${compact ? 'text-sm' : 'text-base'} text-slate`}>{formatPercent(candidate.percentage)}</p>
         </div>
       </div>
-      <div className={`${compact ? 'mt-1.5' : 'mt-2'} ${isResponsiveList ? 'md:mt-0' : ''}`}>
+      <div className={`${compact ? 'mt-1.5' : 'mt-2'} ${isResponsiveList ? 'md:mt-0 md:min-w-0' : ''}`}>
         <VoteBar percent={candidate.percentage} isLeader={candidate.isLeader} isWinner={candidate.isWinner} compact={compact} />
       </div>
 
