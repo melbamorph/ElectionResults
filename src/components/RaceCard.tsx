@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useId, useMemo, useState } from 'react';
 import { NormalizedRace } from '../types';
 import { formatNumber } from '../utils/format';
 import { CandidateRow } from './CandidateRow';
@@ -10,9 +10,8 @@ interface RaceCardProps {
   layoutMode?: 'card' | 'responsive-list';
 }
 
-function toWardSortValue(ward: string): number {
-  const parsed = Number.parseInt(ward, 10);
-  return Number.isNaN(parsed) ? Number.MAX_SAFE_INTEGER : parsed;
+function getWardBreakdownCandidateKey(candidateName: string): string {
+  return candidateName.startsWith('Write-Ins (') ? 'Write-Ins' : candidateName;
 }
 
 export function RaceCard({
@@ -21,15 +20,12 @@ export function RaceCard({
   accentClassName = 'bg-smoke/40',
   layoutMode = 'card',
 }: RaceCardProps) {
-  const showCandidateWardBreakdown = race.scope === 'CITYWIDE' && race.wardBreakdown.length > 0;
+  const [wardBreakdownExpanded, setWardBreakdownExpanded] = useState(false);
+  const wardBreakdownId = useId();
+  const showRaceWardBreakdown = race.scope === 'CITYWIDE' && race.wardBreakdown.length > 0;
   const isResponsiveList = layoutMode === 'responsive-list';
-
   const candidateWardVotes = useMemo(() => {
     const byCandidate = new Map<string, { ward: string; votes: number }[]>();
-
-    if (!showCandidateWardBreakdown) {
-      return byCandidate;
-    }
 
     for (const wardRow of race.wardBreakdown) {
       for (const candidate of wardRow.candidates) {
@@ -37,24 +33,15 @@ export function RaceCard({
           byCandidate.set(candidate.candidate, []);
         }
 
-        const rows = byCandidate.get(candidate.candidate);
-        if (!rows) {
-          continue;
-        }
-
-        rows.push({
+        byCandidate.get(candidate.candidate)?.push({
           ward: wardRow.ward,
           votes: candidate.votes,
         });
       }
     }
 
-    for (const rows of byCandidate.values()) {
-      rows.sort((a, b) => toWardSortValue(a.ward) - toWardSortValue(b.ward));
-    }
-
     return byCandidate;
-  }, [race.wardBreakdown, showCandidateWardBreakdown]);
+  }, [race.wardBreakdown]);
 
   return (
     <article
@@ -76,6 +63,18 @@ export function RaceCard({
             <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-slate md:flex-col md:items-start md:gap-1">
               <p className="tabular-nums">Total votes: {formatNumber(race.totalVotes)}</p>
               {race.raceType === 'office' && race.seats > 1 && <p className="uppercase tracking-wide">Vote for {race.seats}</p>}
+              {showRaceWardBreakdown && (
+                <button
+                  type="button"
+                  aria-expanded={wardBreakdownExpanded}
+                  aria-controls={wardBreakdownId}
+                  aria-label={`${wardBreakdownExpanded ? 'Hide' : 'Show'} ward breakdown for ${race.race}`}
+                  className="inline-flex min-h-11 items-center font-semibold text-clay hover:underline focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-ink/15"
+                  onClick={() => setWardBreakdownExpanded((current) => !current)}
+                >
+                  {wardBreakdownExpanded ? 'Hide ward breakdown' : 'Show ward breakdown'}
+                </button>
+              )}
             </div>
           ) : (
             <>
@@ -83,19 +82,31 @@ export function RaceCard({
               {race.raceType === 'office' && race.seats > 1 && (
                 <p className={`${compact ? 'text-sm' : 'text-base'} uppercase tracking-wide text-slate`}>Vote for {race.seats}</p>
               )}
+              {showRaceWardBreakdown && (
+                <button
+                  type="button"
+                  aria-expanded={wardBreakdownExpanded}
+                  aria-controls={wardBreakdownId}
+                  aria-label={`${wardBreakdownExpanded ? 'Hide' : 'Show'} ward breakdown for ${race.race}`}
+                  className={`${compact ? 'mt-1 text-sm' : 'mt-2 text-base'} inline-flex min-h-11 items-center font-semibold text-clay hover:underline focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-ink/15`}
+                  onClick={() => setWardBreakdownExpanded((current) => !current)}
+                >
+                  {wardBreakdownExpanded ? 'Hide ward breakdown' : 'Show ward breakdown'}
+                </button>
+              )}
             </>
           )}
         </div>
       </header>
 
       <div
+        id={showRaceWardBreakdown ? wardBreakdownId : undefined}
         className={`${compact || isResponsiveList ? 'mt-3 space-y-2' : 'mt-4 space-y-3'} ${
           isResponsiveList ? 'md:mt-0 md:space-y-0 md:divide-y md:divide-line/50' : ''
         }`}
       >
         {race.candidates.map((candidate) => {
-          const candidateName = candidate.candidate.startsWith('Write-Ins (') ? 'Write-Ins' : candidate.candidate;
-          const wardVotes = candidateWardVotes.get(candidateName) || [];
+          const wardVotes = candidateWardVotes.get(getWardBreakdownCandidateKey(candidate.candidate)) ?? [];
 
           return (
             <CandidateRow
@@ -103,6 +114,7 @@ export function RaceCard({
               candidate={candidate}
               compact={compact}
               wardVotes={wardVotes}
+              showWardBreakdown={wardBreakdownExpanded}
               layoutMode={layoutMode}
             />
           );

@@ -317,7 +317,7 @@ describe('RaceCard', () => {
     expect(screen.getByText(/Total votes: 215/i)).toBeInTheDocument();
   });
 
-  it('shows candidate-level ward breakdown toggles for citywide races', () => {
+  it('shows a race-level ward breakdown toggle for citywide races', () => {
     const allWardRace = buildRace({
       election: 'SCHOOL',
       race: 'School Board',
@@ -350,20 +350,36 @@ describe('RaceCard', () => {
 
     const { rerender } = render(<RaceCard race={allWardRace} />);
 
-    expect(screen.getByRole('button', { name: /show ward breakdown for luke t. skywalker/i })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /show ward breakdown for leia m. organa/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /show ward breakdown for school board/i })).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /show ward breakdown for luke t. skywalker/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /show ward breakdown for leia m. organa/i })).not.toBeInTheDocument();
 
-    fireEvent.click(screen.getByRole('button', { name: /show ward breakdown for luke t. skywalker/i }));
-    expect(screen.getByText('Ward 1')).toBeInTheDocument();
-    expect(screen.getByText('Ward 2')).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: /show ward breakdown for school board/i }));
+    const lukeRow = screen.getByText('Luke T. Skywalker').closest('div.rounded-lg') as HTMLElement | null;
+    const leiaRow = screen.getByText('Leia M. Organa').closest('div.rounded-lg') as HTMLElement | null;
+    expect(lukeRow).not.toBeNull();
+    expect(leiaRow).not.toBeNull();
 
-    fireEvent.click(screen.getByRole('button', { name: /hide ward breakdown for luke t. skywalker/i }));
-    expect(screen.queryByText('Ward 1')).not.toBeInTheDocument();
-    expect(screen.queryByText('Ward 2')).not.toBeInTheDocument();
+    if (lukeRow && leiaRow) {
+      expect(within(lukeRow).getByLabelText(/Luke T\. Skywalker ward breakdown/i)).toBeInTheDocument();
+      expect(within(lukeRow).getByText('Ward 1')).toBeInTheDocument();
+      expect(within(lukeRow).getByText('Ward 2')).toBeInTheDocument();
+      expect(within(lukeRow).getAllByText('100')).toHaveLength(2);
+
+      expect(within(leiaRow).getByLabelText(/Leia M\. Organa ward breakdown/i)).toBeInTheDocument();
+      expect(within(leiaRow).getByText('Ward 1')).toBeInTheDocument();
+      expect(within(leiaRow).getByText('Ward 2')).toBeInTheDocument();
+      expect(within(leiaRow).getByText('80')).toBeInTheDocument();
+      expect(within(leiaRow).getByText('70')).toBeInTheDocument();
+    }
+
+    fireEvent.click(screen.getByRole('button', { name: /hide ward breakdown for school board/i }));
+    expect(screen.queryByLabelText(/Luke T\. Skywalker ward breakdown/i)).not.toBeInTheDocument();
+    expect(screen.queryByLabelText(/Leia M\. Organa ward breakdown/i)).not.toBeInTheDocument();
     expect(screen.queryByRole('button', { name: /^show ward breakdown$/i })).not.toBeInTheDocument();
 
     rerender(<RaceCard race={citySection.keyRaces[0]} />);
-    expect(screen.queryByRole('button', { name: /show ward breakdown for luke t. skywalker/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /show ward breakdown for ward councilor ward 1/i })).not.toBeInTheDocument();
     expect(screen.queryByRole('button', { name: /^show ward breakdown$/i })).not.toBeInTheDocument();
   });
 
@@ -387,6 +403,35 @@ describe('RaceCard', () => {
     expect(screen.getByText(/Vote for 2/i)).toBeInTheDocument();
 
     const candidateRow = screen.getByText('Padme N. Amidala').closest('div.rounded-md');
-    expect(candidateRow?.className).toContain('md:grid-cols-[minmax(0,1.7fr)_minmax(150px,1fr)_9ch_6ch]');
+    expect(candidateRow?.className).toContain('md:grid-cols-[minmax(0,1.7fr)_minmax(150px,1fr)_9ch]');
+  });
+
+  it('places the ward breakdown link below the vote-for instruction', () => {
+    const multiSeatRace = buildRace({
+      race: 'City Councilor At-Large',
+      totalVotes: 300,
+      seats: 2,
+      candidates: [
+        { candidate: 'Padme N. Amidala', votes: 120, percentage: 40, rank: 1, isLeader: true, isWinner: true },
+        { candidate: 'Yoda M. Jedi', votes: 100, percentage: 33.3, rank: 2, isLeader: false, isWinner: true },
+      ],
+      wardBreakdown: [
+        {
+          ward: '1',
+          totalVotes: 170,
+          candidates: [
+            { candidate: 'Padme N. Amidala', votes: 90, percentage: 52.9 },
+            { candidate: 'Yoda M. Jedi', votes: 80, percentage: 47.1 },
+          ],
+        },
+      ],
+    });
+
+    render(<RaceCard race={multiSeatRace} compact layoutMode="responsive-list" />);
+
+    const voteForText = screen.getByText(/Vote for 2/i);
+    const breakdownButton = screen.getByRole('button', { name: /show ward breakdown for city councilor at-large/i });
+
+    expect(voteForText.compareDocumentPosition(breakdownButton) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
   });
 });
