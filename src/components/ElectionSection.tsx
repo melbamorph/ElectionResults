@@ -106,9 +106,9 @@ function RaceTypeContainer({
         const groupTitle = group.title || (hasNamedGroups ? fallbackGroupTitle : null);
 
         return (
-          <section key={`${title}-${group.key}`} className="space-y-3 rounded-lg border border-line/70 bg-paper/40 p-3">
-            {groupTitle && <h4 className="font-display text-base font-semibold text-ink">{groupTitle}</h4>}
-            <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+          <section key={`${title}-${group.key}`} className="space-y-3 rounded-xl border border-line/70 bg-paper/55 p-3 md:overflow-hidden md:p-0">
+            {groupTitle && <h4 className="font-display text-base font-semibold text-ink md:px-4 md:pt-4">{groupTitle}</h4>}
+            <div data-testid={`race-group-${group.key}-list`} className="space-y-3 md:space-y-0 md:divide-y md:divide-line/70">
               {group.races.map((race) => (
                 <RaceCard
                   key={`${race.election}-${race.race}`}
@@ -116,6 +116,7 @@ function RaceTypeContainer({
                   electionStatus={electionStatus}
                   compact
                   accentClassName={accentClassName}
+                  layoutMode="responsive-list"
                 />
               ))}
             </div>

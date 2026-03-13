@@ -250,6 +250,64 @@ describe('ElectionSection', () => {
       expect(within(articlesContainer).getByText('Budget Question')).toBeInTheDocument();
     }
   });
+
+  it('renders races in a single responsive list that preserves DOM order', () => {
+    const firstRace = buildRace({
+      race: 'Assessor',
+      totalVotes: 140,
+      sortOrder: 1,
+      candidates: [
+        { candidate: 'Alex North', votes: 80, percentage: 57.1, rank: 1, isLeader: true, isWinner: true },
+        { candidate: 'Jamie South', votes: 60, percentage: 42.9, rank: 2, isLeader: false, isWinner: false },
+      ],
+    });
+    const secondRace = buildRace({
+      race: 'City Clerk',
+      totalVotes: 210,
+      sortOrder: 2,
+      candidates: [
+        { candidate: 'Taylor Reed', votes: 90, percentage: 42.9, rank: 1, isLeader: true, isWinner: true },
+        { candidate: 'Jordan Dale', votes: 70, percentage: 33.3, rank: 2, isLeader: false, isWinner: false },
+        { candidate: 'Morgan Lane', votes: 50, percentage: 23.8, rank: 3, isLeader: false, isWinner: false },
+      ],
+    });
+    const thirdRace = buildRace({
+      race: 'Treasurer',
+      totalVotes: 90,
+      sortOrder: 3,
+      candidates: [{ candidate: 'Casey Hart', votes: 90, percentage: 100, rank: 1, isLeader: true, isWinner: true }],
+    });
+
+    render(
+      <ElectionSection
+        section={{
+          id: 'CITY',
+          title: appTheme.citySectionTitle,
+          status: 'REPORTED',
+          keyRaces: [firstRace, secondRace, thirdRace],
+          offices: [],
+          ballots: [],
+          races: [firstRace, secondRace, thirdRace],
+        }}
+      />,
+    );
+
+    const raceList = screen.getByTestId('race-group-__default__-list');
+    expect(raceList.className).toContain('md:divide-y');
+    expect(raceList.className).not.toContain('sm:grid-cols-2');
+    expect(raceList.className).not.toContain('xl:grid-cols-3');
+
+    const renderedRaces = Array.from(raceList.querySelectorAll('article[data-layout="responsive-list"] h4')).map(
+      (heading) => heading.textContent,
+    );
+    expect(renderedRaces).toEqual(['Assessor', 'City Clerk', 'Treasurer']);
+
+    const responsiveCards = Array.from(raceList.querySelectorAll('article[data-layout="responsive-list"]'));
+    expect(responsiveCards).toHaveLength(3);
+    expect(responsiveCards[0]?.className).toContain('rounded-lg');
+    expect(responsiveCards[0]?.className).toContain('md:grid');
+    expect(responsiveCards[0]?.className).toContain('md:rounded-none');
+  });
 });
 
 describe('RaceCard', () => {
@@ -308,5 +366,24 @@ describe('RaceCard', () => {
     expect(screen.queryByRole('button', { name: /show ward breakdown for andrew faunce/i })).not.toBeInTheDocument();
     expect(screen.queryByRole('button', { name: /^show ward breakdown$/i })).not.toBeInTheDocument();
   });
-});
 
+  it('keeps all candidates visible in responsive list mode', () => {
+    const multiCandidateRace = buildRace({
+      race: 'Library Trustee',
+      totalVotes: 300,
+      seats: 2,
+      candidates: [
+        { candidate: 'Sam Lee', votes: 120, percentage: 40, rank: 1, isLeader: true, isWinner: true },
+        { candidate: 'Pat Morgan', votes: 100, percentage: 33.3, rank: 2, isLeader: false, isWinner: true },
+        { candidate: 'Robin Vale', votes: 80, percentage: 26.7, rank: 3, isLeader: false, isWinner: false },
+      ],
+    });
+
+    render(<RaceCard race={multiCandidateRace} electionStatus="REPORTED" compact layoutMode="responsive-list" />);
+
+    expect(screen.getByText('Sam Lee')).toBeInTheDocument();
+    expect(screen.getByText('Pat Morgan')).toBeInTheDocument();
+    expect(screen.getByText('Robin Vale')).toBeInTheDocument();
+    expect(screen.getByText(/Vote for 2/i)).toBeInTheDocument();
+  });
+});

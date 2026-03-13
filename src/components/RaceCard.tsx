@@ -9,6 +9,7 @@ interface RaceCardProps {
   electionStatus: ElectionStatus;
   compact?: boolean;
   accentClassName?: string;
+  layoutMode?: 'card' | 'responsive-list';
 }
 
 function toWardSortValue(ward: string): number {
@@ -21,8 +22,10 @@ export function RaceCard({
   electionStatus,
   compact = false,
   accentClassName = 'bg-smoke/40',
+  layoutMode = 'card',
 }: RaceCardProps) {
   const showCandidateWardBreakdown = race.scope === 'CITYWIDE' && race.wardBreakdown.length > 0;
+  const isResponsiveList = layoutMode === 'responsive-list';
 
   const candidateWardVotes = useMemo(() => {
     const byCandidate = new Map<string, { ward: string; votes: number }[]>();
@@ -58,37 +61,61 @@ export function RaceCard({
 
   return (
     <article
+      data-layout={layoutMode}
       className={
-        compact
-          ? 'rounded-lg border border-line bg-white/95 p-3 shadow-sm'
-          : 'rounded-xl border border-line bg-white p-5 shadow-card'
+        isResponsiveList
+          ? 'rounded-lg border border-line bg-white/95 p-3 shadow-sm md:grid md:grid-cols-[minmax(0,17rem)_minmax(0,1fr)] md:items-start md:gap-6 md:rounded-none md:border-0 md:bg-transparent md:p-4 md:shadow-none'
+          : compact
+            ? 'rounded-lg border border-line bg-white/95 p-3 shadow-sm'
+            : 'rounded-xl border border-line bg-white p-5 shadow-card'
       }
     >
-      {compact && <div className={`mb-2 h-1 w-12 rounded-full ${accentClassName}`} aria-hidden />}
+      {compact && <div className={`mb-2 h-1 w-12 rounded-full ${accentClassName} ${isResponsiveList ? 'md:hidden' : ''}`} aria-hidden />}
 
-      <header className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
-        <div>
+      <header className={isResponsiveList ? 'flex flex-col gap-2 md:gap-3 md:pr-6' : 'flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between'}>
+        <div className="min-w-0">
           <h4 className={`font-display font-semibold text-ink ${compact ? 'text-base' : 'text-xl'}`}>{race.race}</h4>
-          <p className={`${compact ? 'text-[11px]' : 'text-xs'} text-slate`}>Total votes: {formatNumber(race.totalVotes)}</p>
-          {race.raceType === 'office' && race.seats > 1 && (
-            <p className={`${compact ? 'text-[11px]' : 'text-xs'} uppercase tracking-wide text-slate`}>Vote for {race.seats}</p>
+          {isResponsiveList ? (
+            <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] text-slate md:flex-col md:items-start md:gap-1 md:text-xs">
+              <p className="tabular-nums">Total votes: {formatNumber(race.totalVotes)}</p>
+              {race.raceType === 'office' && race.seats > 1 && <p className="uppercase tracking-wide">Vote for {race.seats}</p>}
+            </div>
+          ) : (
+            <>
+              <p className={`${compact ? 'text-[11px]' : 'text-xs'} text-slate`}>Total votes: {formatNumber(race.totalVotes)}</p>
+              {race.raceType === 'office' && race.seats > 1 && (
+                <p className={`${compact ? 'text-[11px]' : 'text-xs'} uppercase tracking-wide text-slate`}>Vote for {race.seats}</p>
+              )}
+            </>
           )}
         </div>
         <span
           className={`inline-flex w-fit rounded-full border font-semibold uppercase tracking-wide ${statusChipClass(
             electionStatus,
-          )} ${compact ? 'px-2 py-0.5 text-[10px]' : 'px-3 py-1 text-xs'}`}
+          )} ${compact || isResponsiveList ? 'px-2 py-0.5 text-[10px]' : 'px-3 py-1 text-xs'} ${isResponsiveList ? 'md:self-start md:text-[11px]' : ''}`}
         >
           {titleCase(electionStatus)}
         </span>
       </header>
 
-      <div className={`${compact ? 'mt-3 space-y-2' : 'mt-4 space-y-3'}`}>
+      <div
+        className={`${compact || isResponsiveList ? 'mt-3 space-y-2' : 'mt-4 space-y-3'} ${
+          isResponsiveList ? 'md:mt-0 md:space-y-0 md:divide-y md:divide-line/50' : ''
+        }`}
+      >
         {race.candidates.map((candidate) => {
           const candidateName = candidate.candidate.startsWith('Write-Ins (') ? 'Write-Ins' : candidate.candidate;
           const wardVotes = candidateWardVotes.get(candidateName) || [];
 
-          return <CandidateRow key={candidate.candidate} candidate={candidate} compact={compact} wardVotes={wardVotes} />;
+          return (
+            <CandidateRow
+              key={candidate.candidate}
+              candidate={candidate}
+              compact={compact}
+              wardVotes={wardVotes}
+              layoutMode={layoutMode}
+            />
+          );
         })}
       </div>
     </article>
