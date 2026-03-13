@@ -42,16 +42,16 @@ const citySection: ElectionSectionData = {
       showInKeyRaces: true,
       totalVotes: 215,
       candidates: [
-        { candidate: 'Andrew Faunce', votes: 120, percentage: 55.8, rank: 1, isLeader: true, isWinner: true },
-        { candidate: 'Jamie Stone', votes: 95, percentage: 44.2, rank: 2, isLeader: false, isWinner: false },
+        { candidate: 'Luke T. Skywalker', votes: 120, percentage: 55.8, rank: 1, isLeader: true, isWinner: true },
+        { candidate: 'Leia M. Organa', votes: 95, percentage: 44.2, rank: 2, isLeader: false, isWinner: false },
       ],
       wardBreakdown: [
         {
           ward: '1',
           totalVotes: 215,
           candidates: [
-            { candidate: 'Andrew Faunce', votes: 120, percentage: 55.8 },
-            { candidate: 'Jamie Stone', votes: 95, percentage: 44.2 },
+            { candidate: 'Luke T. Skywalker', votes: 120, percentage: 55.8 },
+            { candidate: 'Leia M. Organa', votes: 95, percentage: 44.2 },
           ],
         },
       ],
@@ -72,16 +72,16 @@ const citySection: ElectionSectionData = {
       showInKeyRaces: true,
       totalVotes: 215,
       candidates: [
-        { candidate: 'Andrew Faunce', votes: 120, percentage: 55.8, rank: 1, isLeader: true, isWinner: true },
-        { candidate: 'Jamie Stone', votes: 95, percentage: 44.2, rank: 2, isLeader: false, isWinner: false },
+        { candidate: 'Luke T. Skywalker', votes: 120, percentage: 55.8, rank: 1, isLeader: true, isWinner: true },
+        { candidate: 'Leia M. Organa', votes: 95, percentage: 44.2, rank: 2, isLeader: false, isWinner: false },
       ],
       wardBreakdown: [
         {
           ward: '1',
           totalVotes: 215,
           candidates: [
-            { candidate: 'Andrew Faunce', votes: 120, percentage: 55.8 },
-            { candidate: 'Jamie Stone', votes: 95, percentage: 44.2 },
+            { candidate: 'Luke T. Skywalker', votes: 120, percentage: 55.8 },
+            { candidate: 'Leia M. Organa', votes: 95, percentage: 44.2 },
           ],
         },
       ],
@@ -257,8 +257,8 @@ describe('ElectionSection', () => {
       totalVotes: 140,
       sortOrder: 1,
       candidates: [
-        { candidate: 'Alex North', votes: 80, percentage: 57.1, rank: 1, isLeader: true, isWinner: true },
-        { candidate: 'Jamie South', votes: 60, percentage: 42.9, rank: 2, isLeader: false, isWinner: false },
+        { candidate: 'Cassian A. Andor', votes: 80, percentage: 57.1, rank: 1, isLeader: true, isWinner: true },
+        { candidate: 'Jyn E. Erso', votes: 60, percentage: 42.9, rank: 2, isLeader: false, isWinner: false },
       ],
     });
     const secondRace = buildRace({
@@ -266,16 +266,16 @@ describe('ElectionSection', () => {
       totalVotes: 210,
       sortOrder: 2,
       candidates: [
-        { candidate: 'Taylor Reed', votes: 90, percentage: 42.9, rank: 1, isLeader: true, isWinner: true },
-        { candidate: 'Jordan Dale', votes: 70, percentage: 33.3, rank: 2, isLeader: false, isWinner: false },
-        { candidate: 'Morgan Lane', votes: 50, percentage: 23.8, rank: 3, isLeader: false, isWinner: false },
+        { candidate: 'Wedge A. Antilles', votes: 90, percentage: 42.9, rank: 1, isLeader: true, isWinner: true },
+        { candidate: 'Hera S. Syndulla', votes: 70, percentage: 33.3, rank: 2, isLeader: false, isWinner: false },
+        { candidate: 'Sabine W. Wren', votes: 50, percentage: 23.8, rank: 3, isLeader: false, isWinner: false },
       ],
     });
     const thirdRace = buildRace({
       race: 'Treasurer',
       totalVotes: 90,
       sortOrder: 3,
-      candidates: [{ candidate: 'Casey Hart', votes: 90, percentage: 100, rank: 1, isLeader: true, isWinner: true }],
+      candidates: [{ candidate: 'Maz K. Kanata', votes: 90, percentage: 100, rank: 1, isLeader: true, isWinner: true }],
     });
 
     render(
@@ -325,24 +325,24 @@ describe('RaceCard', () => {
       ward: 'ALL',
       totalVotes: 350,
       candidates: [
-        { candidate: 'Andrew Faunce', votes: 200, percentage: 57.1, rank: 1, isLeader: true, isWinner: true },
-        { candidate: 'Jamie Stone', votes: 150, percentage: 42.9, rank: 2, isLeader: false, isWinner: false },
+        { candidate: 'Luke T. Skywalker', votes: 200, percentage: 57.1, rank: 1, isLeader: true, isWinner: true },
+        { candidate: 'Leia M. Organa', votes: 150, percentage: 42.9, rank: 2, isLeader: false, isWinner: false },
       ],
       wardBreakdown: [
         {
           ward: '1',
           totalVotes: 180,
           candidates: [
-            { candidate: 'Andrew Faunce', votes: 100, percentage: 55.6 },
-            { candidate: 'Jamie Stone', votes: 80, percentage: 44.4 },
+            { candidate: 'Luke T. Skywalker', votes: 100, percentage: 55.6 },
+            { candidate: 'Leia M. Organa', votes: 80, percentage: 44.4 },
           ],
         },
         {
           ward: '2',
           totalVotes: 170,
           candidates: [
-            { candidate: 'Andrew Faunce', votes: 100, percentage: 58.8 },
-            { candidate: 'Jamie Stone', votes: 70, percentage: 41.2 },
+            { candidate: 'Luke T. Skywalker', votes: 100, percentage: 58.8 },
+            { candidate: 'Leia M. Organa', votes: 70, percentage: 41.2 },
           ],
         },
       ],
@@ -350,20 +350,20 @@ describe('RaceCard', () => {
 
     const { rerender } = render(<RaceCard race={allWardRace} />);
 
-    expect(screen.getByRole('button', { name: /show ward breakdown for andrew faunce/i })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /show ward breakdown for jamie stone/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /show ward breakdown for luke t. skywalker/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /show ward breakdown for leia m. organa/i })).toBeInTheDocument();
 
-    fireEvent.click(screen.getByRole('button', { name: /show ward breakdown for andrew faunce/i }));
+    fireEvent.click(screen.getByRole('button', { name: /show ward breakdown for luke t. skywalker/i }));
     expect(screen.getByText('Ward 1')).toBeInTheDocument();
     expect(screen.getByText('Ward 2')).toBeInTheDocument();
 
-    fireEvent.click(screen.getByRole('button', { name: /hide ward breakdown for andrew faunce/i }));
+    fireEvent.click(screen.getByRole('button', { name: /hide ward breakdown for luke t. skywalker/i }));
     expect(screen.queryByText('Ward 1')).not.toBeInTheDocument();
     expect(screen.queryByText('Ward 2')).not.toBeInTheDocument();
     expect(screen.queryByRole('button', { name: /^show ward breakdown$/i })).not.toBeInTheDocument();
 
     rerender(<RaceCard race={citySection.keyRaces[0]} />);
-    expect(screen.queryByRole('button', { name: /show ward breakdown for andrew faunce/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /show ward breakdown for luke t. skywalker/i })).not.toBeInTheDocument();
     expect(screen.queryByRole('button', { name: /^show ward breakdown$/i })).not.toBeInTheDocument();
   });
 
@@ -373,20 +373,20 @@ describe('RaceCard', () => {
       totalVotes: 300,
       seats: 2,
       candidates: [
-        { candidate: 'Sam Lee', votes: 120, percentage: 40, rank: 1, isLeader: true, isWinner: true },
-        { candidate: 'Pat Morgan', votes: 100, percentage: 33.3, rank: 2, isLeader: false, isWinner: true },
-        { candidate: 'Robin Vale', votes: 80, percentage: 26.7, rank: 3, isLeader: false, isWinner: false },
+        { candidate: 'Padme N. Amidala', votes: 120, percentage: 40, rank: 1, isLeader: true, isWinner: true },
+        { candidate: 'Yoda M. Jedi', votes: 100, percentage: 33.3, rank: 2, isLeader: false, isWinner: true },
+        { candidate: 'Chewbacca R. Wookiee', votes: 80, percentage: 26.7, rank: 3, isLeader: false, isWinner: false },
       ],
     });
 
     render(<RaceCard race={multiCandidateRace} compact layoutMode="responsive-list" />);
 
-    expect(screen.getByText('Sam Lee')).toBeInTheDocument();
-    expect(screen.getByText('Pat Morgan')).toBeInTheDocument();
-    expect(screen.getByText('Robin Vale')).toBeInTheDocument();
+    expect(screen.getByText('Padme N. Amidala')).toBeInTheDocument();
+    expect(screen.getByText('Yoda M. Jedi')).toBeInTheDocument();
+    expect(screen.getByText('Chewbacca R. Wookiee')).toBeInTheDocument();
     expect(screen.getByText(/Vote for 2/i)).toBeInTheDocument();
 
-    const candidateRow = screen.getByText('Sam Lee').closest('div.rounded-md');
+    const candidateRow = screen.getByText('Padme N. Amidala').closest('div.rounded-md');
     expect(candidateRow?.className).toContain('md:grid-cols-[minmax(0,1.7fr)_minmax(150px,1fr)_9ch_6ch]');
   });
 });

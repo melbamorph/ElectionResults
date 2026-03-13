@@ -9,16 +9,16 @@ import {
 } from './transform';
 
 const resultsCsv = `election,race,ward,candidate,votes,ward_1,ward_2,ward_3
-CITY,City Councilor At Large,ALL,Paul Roberts,340,110,120,110
-CITY,City Councilor At Large,ALL,Ronald Smith,325,105,110,110
-CITY,City Councilor At Large,ALL,Kellen Appleton,280,90,95,95
-CITY,Ward Councilor Ward 1,1,Andrew Faunce,120,,,
-CITY,Ward Councilor Ward 1,1,Jamie Stone,95,,,
-CITY,Ward Councilor Ward 2,2,Eric Cole,98,,,
-CITY,Ward Councilor Ward 2,2,George Sykes,110,,,
-SCHOOL,School Board,ALL,Candy Hammond,410,140,135,135
-SCHOOL,School Board,ALL,Travis Talbert,398,132,133,133
-SCHOOL,School Board,ALL,Tia Winter,372,120,126,126
+CITY,City Councilor At Large,ALL,Padme N. Amidala,340,110,120,110
+CITY,City Councilor At Large,ALL,Yoda M. Jedi,325,105,110,110
+CITY,City Councilor At Large,ALL,Chewbacca R. Wookiee,280,90,95,95
+CITY,Ward Councilor Ward 1,1,Luke T. Skywalker,120,,,
+CITY,Ward Councilor Ward 1,1,Leia M. Organa,95,,,
+CITY,Ward Councilor Ward 2,2,Han R. Solo,98,,,
+CITY,Ward Councilor Ward 2,2,Obi-Wan J. Kenobi,110,,,
+SCHOOL,School Board,ALL,R2-D2 A. Astromech,410,140,135,135
+SCHOOL,School Board,ALL,Boba F. Fett,398,132,133,133
+SCHOOL,School Board,ALL,Grogu B. Child,372,120,126,126
 `;
 
 const wardStatusCsv = `ward,status
@@ -86,8 +86,8 @@ CITY,Race,ALL,Name,10`;
     expect(atLarge).toBeDefined();
     expect(atLarge?.raceGroup).toBe('Citywide Ballot');
     expect(atLarge?.candidates.filter((c) => c.isWinner).map((c) => c.candidate)).toEqual([
-      'Paul Roberts',
-      'Ronald Smith',
+      'Padme N. Amidala',
+      'Yoda M. Jedi',
     ]);
     expect(atLarge?.candidates.find((c) => c.candidate === 'Write-Ins')).toMatchObject({ votes: 0, isWinner: false });
     expect(atLarge?.wardBreakdown.map((row) => row.ward)).toEqual(['1', '2', '3']);
@@ -95,7 +95,7 @@ CITY,Race,ALL,Name,10`;
     expect(
       atLarge?.wardBreakdown
         .find((row) => row.ward === '2')
-        ?.candidates.find((candidate) => candidate.candidate === 'Paul Roberts')
+        ?.candidates.find((candidate) => candidate.candidate === 'Padme N. Amidala')
         ?.votes,
     ).toBe(120);
 
@@ -115,8 +115,8 @@ CITY,Race,ALL,Name,10`;
 
   it('shows write-in winner names only when a write-in candidate wins an office race', () => {
     const writeInResultsCsv = `election,race,ward,candidate,votes,write_in_winner_name
-CITY,Town Clerk,ALL,Write In,125,Jordan Lee
-CITY,Town Clerk,ALL,Pat Gomez,100,
+CITY,Town Clerk,ALL,Write In,125,Din Djarin
+CITY,Town Clerk,ALL,Mace W. Windu,100,
 CITY,Budget Question,ALL,Yes,210,
 CITY,Budget Question,ALL,No,180,
 CITY,Budget Question,ALL,Write-Ins,3,
@@ -136,13 +136,13 @@ CITY,Budget Question,ballot,,CITYWIDE,ALL,1,2,FALSE,TRUE
     });
 
     const townClerk = data.sections.CITY.races.find((race) => race.race === 'Town Clerk');
-    expect(townClerk?.candidates[0]).toMatchObject({ candidate: 'Write-Ins (Jordan Lee)', votes: 125, isWinner: true });
+    expect(townClerk?.candidates[0]).toMatchObject({ candidate: 'Write-Ins (Din Djarin)', votes: 125, isWinner: true });
 
     const budgetQuestion = data.sections.CITY.races.find((race) => race.race === 'Budget Question');
     expect(budgetQuestion?.candidates[0]).toMatchObject({ candidate: 'Yes', votes: 210, isLeader: true, isWinner: true });
     expect(budgetQuestion?.candidates[1]).toMatchObject({ candidate: 'No', votes: 180, isWinner: false });
     expect(budgetQuestion?.candidates.find((c) => c.candidate === 'Write-Ins')).toMatchObject({ votes: 3 });
-    expect(budgetQuestion?.candidates.some((c) => c.candidate.includes('(Jordan Lee)'))).toBe(false);
+    expect(budgetQuestion?.candidates.some((c) => c.candidate.includes('(Din Djarin)'))).toBe(false);
   });
 
   it('keeps race entries sorted by descending votes while ballots are still counting', () => {
