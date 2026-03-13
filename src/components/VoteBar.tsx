@@ -10,7 +10,7 @@ export function VoteBar({ percent, isLeader, isWinner, compact = false }: VoteBa
   const barClass = isWinner ? 'bg-winner' : isLeader ? 'bg-clay' : 'bg-smoke/60';
 
   return (
-    <div className={`w-full overflow-hidden rounded-full ${compact ? 'h-1.5 bg-smoke/20' : 'h-2 bg-smoke/20'}`}>
+    <div className={`w-full overflow-hidden rounded-full ${compact ? 'h-2 bg-smoke/20' : 'h-2.5 bg-smoke/20'}`}>
       <div
         className={`h-full rounded-full transition-all duration-500 ${barClass}`}
         style={{ width: `${width}%` }}

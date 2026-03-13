@@ -49,11 +49,11 @@ interface ResultsPageNavProps {
 
 function ResultsPageNav({ currentPage }: ResultsPageNavProps) {
   const baseClass =
-    'inline-flex items-center rounded-full border px-4 py-2 text-xs font-semibold uppercase tracking-wide transition';
+    'inline-flex min-h-12 items-center justify-center rounded-full border px-5 py-3 text-sm font-semibold uppercase tracking-wide transition focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-ink/20';
 
   return (
-    <nav className="rounded-2xl border border-line bg-white/80 p-3 shadow-card" aria-label="Results pages">
-      <div className="flex flex-wrap items-center gap-2">
+    <nav className="rounded-2xl border border-line bg-white/80 p-3 shadow-card sm:p-4" aria-label="Results pages">
+      <div className="grid gap-2 sm:grid-cols-2">
         <a
           href={MUNICIPAL_RESULTS_HASH}
           className={`${baseClass} ${
@@ -83,9 +83,9 @@ function ResultsPageNav({ currentPage }: ResultsPageNavProps) {
 
 function LoadingState() {
   return (
-    <div className="mx-auto max-w-6xl p-6">
-      <div className="rounded-2xl border border-line bg-white p-8 text-center shadow-card">
-        <p className="font-display text-xl font-semibold text-ink">Loading election results...</p>
+    <div className="mx-auto max-w-6xl px-4 py-6 sm:px-6">
+      <div className="rounded-2xl border border-line bg-white p-6 text-center shadow-card sm:p-8">
+        <p className="font-display text-2xl font-semibold text-ink">Loading election results...</p>
       </div>
     </div>
   );
@@ -93,9 +93,9 @@ function LoadingState() {
 
 function EmptyState({ message }: { message: string }) {
   return (
-    <div className="mx-auto max-w-6xl p-6">
-      <div className="rounded-2xl border border-alert/30 bg-alert/10 p-8 text-center shadow-card">
-        <p className="font-display text-xl font-semibold text-alert">{message}</p>
+    <div className="mx-auto max-w-6xl px-4 py-6 sm:px-6">
+      <div className="rounded-2xl border border-alert/30 bg-alert/10 p-6 text-center shadow-card sm:p-8">
+        <p className="font-display text-2xl font-semibold text-alert">{message}</p>
       </div>
     </div>
   );
@@ -148,7 +148,7 @@ export default function App() {
   return (
     <div className="min-h-screen bg-paper">
       <div className="bg-[radial-gradient(circle_at_top,_#fff_10%,_#f4f2ee_65%,_#ece8df_100%)] pb-10">
-        <main className="mx-auto flex max-w-6xl flex-col gap-6 px-4 py-6 md:px-6 md:py-8">
+        <main className="mx-auto flex max-w-6xl flex-col gap-5 px-4 py-5 sm:gap-6 sm:px-5 sm:py-6 md:px-6 md:py-8">
           <ElectionHeader lastUpdated={lastUpdated} overallFinal={data.overallFinal} error={error} />
           <ReportingSummary
             summary={data.summary}

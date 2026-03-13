@@ -61,27 +61,27 @@ export function RaceCard({
       data-layout={layoutMode}
       className={
         isResponsiveList
-          ? 'rounded-lg border border-line bg-white/95 p-3 shadow-sm md:grid md:grid-cols-[minmax(0,17rem)_minmax(0,1fr)] md:items-start md:gap-6 md:rounded-none md:border-0 md:bg-transparent md:p-4 md:shadow-none'
+          ? 'rounded-lg border border-line bg-white/95 p-4 shadow-sm md:grid md:grid-cols-[minmax(0,17rem)_minmax(0,1fr)] md:items-start md:gap-6 md:rounded-none md:border-0 md:bg-transparent md:p-4 md:shadow-none'
           : compact
-            ? 'rounded-lg border border-line bg-white/95 p-3 shadow-sm'
-            : 'rounded-xl border border-line bg-white p-5 shadow-card'
+            ? 'rounded-lg border border-line bg-white/95 p-4 shadow-sm'
+            : 'rounded-xl border border-line bg-white p-5 shadow-card sm:p-6'
       }
     >
-      {compact && <div className={`mb-2 h-1 w-12 rounded-full ${accentClassName} ${isResponsiveList ? 'md:hidden' : ''}`} aria-hidden />}
+      {compact && <div className={`mb-3 h-1.5 w-14 rounded-full ${accentClassName} ${isResponsiveList ? 'md:hidden' : ''}`} aria-hidden />}
 
       <header className={isResponsiveList ? 'md:pr-6' : ''}>
         <div className="min-w-0">
-          <h4 className={`font-display font-semibold text-ink ${compact ? 'text-base' : 'text-xl'}`}>{race.race}</h4>
+          <h4 className={`font-display font-semibold leading-snug text-ink ${compact ? 'text-lg' : 'text-2xl'}`}>{race.race}</h4>
           {isResponsiveList ? (
-            <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] text-slate md:flex-col md:items-start md:gap-1 md:text-xs">
+            <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-slate md:flex-col md:items-start md:gap-1">
               <p className="tabular-nums">Total votes: {formatNumber(race.totalVotes)}</p>
               {race.raceType === 'office' && race.seats > 1 && <p className="uppercase tracking-wide">Vote for {race.seats}</p>}
             </div>
           ) : (
             <>
-              <p className={`${compact ? 'text-[11px]' : 'text-xs'} text-slate`}>Total votes: {formatNumber(race.totalVotes)}</p>
+              <p className={`${compact ? 'text-sm' : 'text-base'} text-slate`}>Total votes: {formatNumber(race.totalVotes)}</p>
               {race.raceType === 'office' && race.seats > 1 && (
-                <p className={`${compact ? 'text-[11px]' : 'text-xs'} uppercase tracking-wide text-slate`}>Vote for {race.seats}</p>
+                <p className={`${compact ? 'text-sm' : 'text-base'} uppercase tracking-wide text-slate`}>Vote for {race.seats}</p>
               )}
             </>
           )}

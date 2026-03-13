@@ -5,16 +5,16 @@ export default {
     extend: {
       colors: {
         ink: '#111827',
-        slate: '#64748b',
+        slate: '#475569',
         paper: '#f4f2ee',
         line: '#d4d4d4',
-        clay: '#a67c52',
+        clay: '#7c5530',
         sage: '#6d8a66',
-        smoke: '#6b7280',
+        smoke: '#4b5563',
         mist: '#f6f3ed',
-        winner: '#0f766e',
+        winner: '#115e59',
         leader: '#7b6d50',
-        alert: '#b45309',
+        alert: '#92400e',
       },
       boxShadow: {
         card: '0 10px 30px rgba(15, 23, 42, 0.08)',

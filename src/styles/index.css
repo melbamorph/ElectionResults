@@ -7,6 +7,13 @@
 :root {
   color: #111827;
   background-color: #f4f2ee;
+  font-size: 17px;
+  line-height: 1.6;
+  -webkit-text-size-adjust: 100%;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
@@ -14,6 +21,7 @@ body {
   font-family: 'Source Serif 4', Georgia, serif;
   color: #111827;
   background-color: #f4f2ee;
+  min-width: 320px;
 }
 
 h1,
@@ -25,4 +33,42 @@ h6,
 button,
 .font-display {
   font-family: 'Libre Franklin', 'Segoe UI', sans-serif;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+a,
+button {
+  -webkit-tap-highlight-color: transparent;
+}
+
+*:focus-visible {
+  outline: 3px solid #111827;
+  outline-offset: 3px;
+}
+
+@media (min-width: 768px) {
+  :root {
+    font-size: 18px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
 }

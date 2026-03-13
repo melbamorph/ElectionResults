@@ -29,30 +29,30 @@ export function CandidateRow({
     <div
       className={
         compact
-          ? `rounded-md border border-line/70 bg-mist px-2.5 py-2 ${
+          ? `rounded-md border border-line/70 bg-mist px-3 py-3 ${
               isResponsiveList
                 ? 'md:grid md:grid-cols-[minmax(0,1.7fr)_minmax(150px,1fr)_auto_auto] md:items-center md:gap-x-4 md:rounded-none md:border-0 md:bg-transparent md:px-0 md:py-3'
                 : ''
             }`
-          : 'rounded-lg border border-line p-3'
+          : 'rounded-lg border border-line p-4'
       }
     >
-      <div className={`flex items-center justify-between gap-3 ${isResponsiveList ? 'md:block md:min-w-0' : ''}`}>
+      <div className={`flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between ${isResponsiveList ? 'md:block md:min-w-0' : ''}`}>
         <p
-          className={`${compact ? 'text-sm' : 'text-base'} min-w-0 ${
+          className={`${compact ? 'text-base' : 'text-lg'} min-w-0 leading-snug ${
             candidate.isLeader ? 'font-semibold text-ink' : 'font-medium text-slate-700'
           }`}
         >
           {candidate.candidate}
           {candidate.isWinner && (
-            <span className={`${compact ? 'ml-1.5 text-[10px]' : 'ml-2 text-xs'} font-semibold uppercase text-winner`}>
+            <span className={`${compact ? 'ml-2 text-xs' : 'ml-2 text-sm'} font-semibold uppercase text-winner`}>
               Winner
             </span>
           )}
         </p>
-        <div className={`text-right tabular-nums ${isResponsiveList ? 'md:hidden' : ''}`}>
-          <p className={`${compact ? 'text-xs' : 'text-sm'} font-semibold text-ink`}>{formatNumber(candidate.votes)}</p>
-          <p className={`${compact ? 'text-[11px]' : 'text-xs'} text-slate`}>{formatPercent(candidate.percentage)}</p>
+        <div className={`tabular-nums ${isResponsiveList ? 'md:hidden' : 'text-left sm:text-right'}`}>
+          <p className={`${compact ? 'text-base' : 'text-lg'} font-semibold text-ink`}>{formatNumber(candidate.votes)}</p>
+          <p className={`${compact ? 'text-sm' : 'text-base'} text-slate`}>{formatPercent(candidate.percentage)}</p>
         </div>
       </div>
       <div className={`${compact ? 'mt-1.5' : 'mt-2'} ${isResponsiveList ? 'md:mt-0' : ''}`}>
@@ -61,10 +61,10 @@ export function CandidateRow({
 
       {isResponsiveList && (
         <>
-          <p className="hidden text-right text-sm font-semibold text-ink tabular-nums md:block">
+          <p className="hidden text-right text-base font-semibold text-ink tabular-nums md:block">
             {formatNumber(candidate.votes)}
           </p>
-          <p className="hidden text-right text-sm text-slate tabular-nums md:block">{formatPercent(candidate.percentage)}</p>
+          <p className="hidden text-right text-base text-slate tabular-nums md:block">{formatPercent(candidate.percentage)}</p>
         </>
       )}
 
@@ -72,7 +72,7 @@ export function CandidateRow({
         <div className={`${compact ? 'mt-1.5' : 'mt-2'} ${isResponsiveList ? 'md:col-span-4' : ''}`}>
           <button
             type="button"
-            className={`${compact ? 'text-[11px]' : 'text-xs'} font-semibold text-clay hover:underline`}
+            className={`${compact ? 'text-sm' : 'text-base'} inline-flex min-h-11 items-center font-semibold text-clay hover:underline focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-ink/15`}
             aria-label={`${wardBreakdownExpanded ? 'Hide' : 'Show'} ward breakdown for ${candidate.candidate}`}
             onClick={() => setWardBreakdownExpanded((current) => !current)}
           >
@@ -80,9 +80,9 @@ export function CandidateRow({
           </button>
 
           {wardBreakdownExpanded && (
-            <ul className={`${compact ? 'mt-1.5 text-[11px]' : 'mt-2 text-xs'} rounded-md border border-line/70 bg-white p-2`}>
+            <ul className={`${compact ? 'mt-1.5 text-sm' : 'mt-2 text-base'} rounded-md border border-line/70 bg-white p-3`}>
               {wardVotes.map((wardVote) => (
-                <li key={`${candidate.candidate}-${wardVote.ward}`} className="flex items-center justify-between py-0.5">
+                <li key={`${candidate.candidate}-${wardVote.ward}`} className="flex items-center justify-between gap-4 py-1">
                   <span className="text-slate">Ward {wardVote.ward}</span>
                   <span className="font-semibold text-ink">{formatNumber(wardVote.votes)}</span>
                 </li>

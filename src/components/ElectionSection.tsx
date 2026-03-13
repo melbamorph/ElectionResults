@@ -83,27 +83,30 @@ function RaceTypeContainer({
   const hasNamedGroups = groups.some((group) => group.title !== null);
 
   return (
-    <section className="space-y-4 rounded-xl border border-line bg-white p-4 shadow-card">
-      <header className="flex items-center justify-between gap-3">
+    <section className="space-y-4 rounded-xl border border-line bg-white p-4 shadow-card sm:p-5">
+      <header className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h3 className="font-display text-lg font-semibold text-ink">{title}</h3>
-          <p className="text-xs text-slate">{subtitle}</p>
+          <h3 className="font-display text-xl font-semibold text-ink">{title}</h3>
+          <p className="text-sm text-slate">{subtitle}</p>
         </div>
-        <span className="rounded-full bg-paper px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wide text-slate">
+        <span className="inline-flex min-h-11 items-center rounded-full bg-paper px-3 py-2 text-sm font-semibold uppercase tracking-wide text-slate">
           {races.length} race{races.length === 1 ? '' : 's'}
         </span>
       </header>
 
       {races.length === 0 && (
-        <p className="rounded-lg border border-dashed border-line bg-paper px-3 py-2 text-sm text-slate">{emptyMessage}</p>
+        <p className="rounded-lg border border-dashed border-line bg-paper px-4 py-3 text-base text-slate">{emptyMessage}</p>
       )}
 
       {groups.map((group) => {
         const groupTitle = group.title || (hasNamedGroups ? fallbackGroupTitle : null);
 
         return (
-          <section key={`${title}-${group.key}`} className="space-y-3 rounded-xl border border-line/70 bg-paper/55 p-3 md:overflow-hidden md:p-0">
-            {groupTitle && <h4 className="font-display text-base font-semibold text-ink md:px-4 md:pt-4">{groupTitle}</h4>}
+          <section
+            key={`${title}-${group.key}`}
+            className="space-y-3 rounded-xl border border-line/70 bg-paper/55 p-3 sm:p-4 md:overflow-hidden md:p-0"
+          >
+            {groupTitle && <h4 className="font-display text-lg font-semibold text-ink md:px-4 md:pt-4">{groupTitle}</h4>}
             <div data-testid={`race-group-${group.key}-list`} className="space-y-3 md:space-y-0 md:divide-y md:divide-line/70">
               {group.races.map((race) => (
                 <RaceCard
@@ -131,9 +134,9 @@ export function ElectionSection({ section }: ElectionSectionProps) {
   const isSchoolSection = section.id === 'SCHOOL';
 
   return (
-    <section className="space-y-5 rounded-2xl border border-line bg-white/70 p-6">
+    <section className="space-y-5 rounded-2xl border border-line bg-white/70 p-4 sm:p-5 md:p-6">
       <header>
-        <h2 className="font-display text-2xl font-semibold text-ink">{section.title}</h2>
+        <h2 className="font-display text-3xl font-semibold text-ink">{section.title}</h2>
       </header>
 
       <div className="space-y-4">
