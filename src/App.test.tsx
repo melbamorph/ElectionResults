@@ -67,7 +67,7 @@ function buildData(): DashboardData {
       sortOrder: 3,
     }),
     buildRace({
-      race: 'Question Number One',
+      race: 'Question #1',
       raceType: 'ballot',
       scope: 'CITYWIDE',
       ward: 'ALL',
@@ -143,7 +143,7 @@ describe('App ward filtering', () => {
     expect(screen.getByText('Ward Councilor Ward 1')).toBeInTheDocument();
     expect(screen.getByText('Ward Councilor Ward 2')).toBeInTheDocument();
     expect(screen.getByText('City Councilor At Large')).toBeInTheDocument();
-    expect(screen.getByText('Question Number One')).toBeInTheDocument();
+    expect(screen.getByText('Question #1')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /^clear ward filter$/i })).toBeDisabled();
 
     await user.click(screen.getByRole('button', { name: /show ward 1 ballot items/i }));
@@ -151,7 +151,7 @@ describe('App ward filtering', () => {
     expect(screen.getByText('Ward Councilor Ward 1')).toBeInTheDocument();
     expect(screen.queryByText('Ward Councilor Ward 2')).not.toBeInTheDocument();
     expect(screen.getByText('City Councilor At Large')).toBeInTheDocument();
-    expect(screen.getByText('Question Number One')).toBeInTheDocument();
+    expect(screen.getByText('Question #1')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /^clear ward filter$/i })).toBeEnabled();
 
     await user.click(screen.getByRole('button', { name: /^clear ward filter$/i }));

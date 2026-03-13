@@ -12,7 +12,6 @@ interface RaceTypeContainerProps {
   subtitle: string;
   races: NormalizedRace[];
   accentClassName: string;
-  fallbackGroupTitle: string;
   emptyMessage: string;
 }
 
@@ -76,11 +75,9 @@ function RaceTypeContainer({
   subtitle,
   races,
   accentClassName,
-  fallbackGroupTitle,
   emptyMessage,
 }: RaceTypeContainerProps) {
   const groups = buildRaceGroups(races);
-  const hasNamedGroups = groups.some((group) => group.title !== null);
 
   return (
     <section className="space-y-4 rounded-xl border border-line bg-white p-4 shadow-card sm:p-5">
@@ -99,14 +96,11 @@ function RaceTypeContainer({
       )}
 
       {groups.map((group) => {
-        const groupTitle = group.title || (hasNamedGroups ? fallbackGroupTitle : null);
-
         return (
           <section
             key={`${title}-${group.key}`}
             className="space-y-3 rounded-xl border border-line/70 bg-paper/55 p-3 sm:p-4 md:overflow-hidden md:p-0"
           >
-            {groupTitle && <h4 className="font-display text-lg font-semibold text-ink md:px-4 md:pt-4">{groupTitle}</h4>}
             <div data-testid={`race-group-${group.key}-list`} className="space-y-3 md:space-y-0 md:divide-y md:divide-line/70">
               {group.races.map((race) => (
                 <RaceCard
@@ -145,7 +139,6 @@ export function ElectionSection({ section }: ElectionSectionProps) {
           subtitle="Candidate contests where winners are seated"
           races={offices}
           accentClassName="bg-sage"
-          fallbackGroupTitle="Other Positions"
           emptyMessage="No elected position races are configured for this election."
         />
 
@@ -155,7 +148,6 @@ export function ElectionSection({ section }: ElectionSectionProps) {
             subtitle="Articles, measures, and yes/no questions"
             races={ballotRaces}
             accentClassName="bg-clay"
-            fallbackGroupTitle="Other Articles"
             emptyMessage="No articles are configured for this election."
           />
         ) : (
@@ -165,7 +157,6 @@ export function ElectionSection({ section }: ElectionSectionProps) {
               subtitle="Municipal articles and warrant items"
               races={articleRaces}
               accentClassName="bg-clay"
-              fallbackGroupTitle="Other Articles"
               emptyMessage="No articles are configured for this election."
             />
 
@@ -174,7 +165,6 @@ export function ElectionSection({ section }: ElectionSectionProps) {
               subtitle="Measures and yes/no questions"
               races={questionRaces}
               accentClassName="bg-clay"
-              fallbackGroupTitle="Other Questions"
               emptyMessage="No ballot questions are configured for this election."
             />
 
@@ -183,7 +173,6 @@ export function ElectionSection({ section }: ElectionSectionProps) {
               subtitle="Charter and constitutional amendments"
               races={amendmentRaces}
               accentClassName="bg-clay"
-              fallbackGroupTitle="Other Amendments"
               emptyMessage="No amendments are configured for this election."
             />
           </>

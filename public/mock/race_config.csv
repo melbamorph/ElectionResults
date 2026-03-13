@@ -1,15 +1,22 @@
 election,race,race_type,race_group,scope,ward,seats,sort_order,show_in_key_races,enabled
-CITY,Ward Councilor Ward 1,office,Municipal Offices,WARD,1,1,1,TRUE,TRUE
-CITY,Ward Councilor Ward 2,office,Municipal Offices,WARD,2,1,2,TRUE,TRUE
-CITY,Ward Councilor Ward 3,office,Municipal Offices,WARD,3,1,3,TRUE,TRUE
-CITY,City Councilor At Large,office,Municipal Offices,CITYWIDE,ALL,2,4,TRUE,TRUE
-CITY,Library Trustees,office,Municipal Offices,CITYWIDE,ALL,3,5,FALSE,TRUE
-CITY,Question Number One,ballot,City Questions,CITYWIDE,ALL,1,6,FALSE,TRUE
-CITY,Question Number Two,ballot,City Questions,CITYWIDE,ALL,1,7,FALSE,TRUE
-CITY,Question Number Three,ballot,City Questions,CITYWIDE,ALL,1,8,FALSE,TRUE
+CITY,Ward 1 Councilor,office,Municipal Offices,WARD,1,1,1,TRUE,TRUE
+CITY,Ward 1 Clerk,office,Municipal Offices,WARD,1,1,2,FALSE,TRUE
+CITY,Ward 2 Councilor,office,Municipal Offices,WARD,2,1,3,TRUE,TRUE
+CITY,Ward 2 Moderator,office,Municipal Offices,WARD,2,1,4,FALSE,TRUE
+CITY,Ward 2 Supervisor of the Voter Checklist,office,Municipal Offices,WARD,2,1,5,FALSE,TRUE
+CITY,Ward 2 Clerk,office,Municipal Offices,WARD,2,1,6,FALSE,TRUE
+CITY,Ward 3 Councilor,office,Municipal Offices,WARD,3,1,7,TRUE,TRUE
+CITY,Ward 3 Clerk,office,Municipal Offices,WARD,3,1,8,FALSE,TRUE
+CITY,Ward 3 Supervisor of the Voter Checklist,office,Municipal Offices,WARD,3,1,9,FALSE,TRUE
+CITY,City Councilor At-Large,office,Municipal Offices,CITYWIDE,ALL,2,10,TRUE,TRUE
+CITY,Library Trustees,office,Municipal Offices,CITYWIDE,ALL,3,11,FALSE,TRUE
+CITY,Charter Amendment #1,ballot,Charter Amendments,CITYWIDE,ALL,1,12,FALSE,TRUE
+CITY,Question #1,ballot,City Questions,CITYWIDE,ALL,1,13,FALSE,TRUE
+CITY,Question #2,ballot,City Questions,CITYWIDE,ALL,1,14,FALSE,TRUE
+CITY,Zoning Article #1,ballot,Zoning Articles,CITYWIDE,ALL,1,15,FALSE,TRUE
 SCHOOL,School Board,office,School Offices,CITYWIDE,ALL,3,1,TRUE,TRUE
 SCHOOL,School District Moderator,office,School Offices,CITYWIDE,ALL,1,2,FALSE,TRUE
 SCHOOL,School District Clerk,office,School Offices,CITYWIDE,ALL,1,3,FALSE,TRUE
 SCHOOL,School District Treasurer,office,School Offices,CITYWIDE,ALL,1,4,FALSE,TRUE
-SCHOOL,Warrant Number One,ballot,School Questions,CITYWIDE,ALL,1,5,FALSE,TRUE
-SCHOOL,Warrant Number Two,ballot,School Questions,CITYWIDE,ALL,1,6,FALSE,TRUE
+SCHOOL,Warrant #1,ballot,School Questions,CITYWIDE,ALL,1,5,FALSE,TRUE
+SCHOOL,Warrant #2,ballot,School Questions,CITYWIDE,ALL,1,6,FALSE,TRUE

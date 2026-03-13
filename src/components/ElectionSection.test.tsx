@@ -162,12 +162,12 @@ describe('ElectionSection', () => {
       'Amendments',
     ]);
 
-    expect(screen.getByRole('heading', { name: /^Democratic Ballot$/i })).toBeInTheDocument();
-    expect(screen.getByRole('heading', { name: /^Republican Ballot$/i })).toBeInTheDocument();
-    expect(screen.getByRole('heading', { name: /^Other Positions$/i })).toBeInTheDocument();
-    expect(screen.getByRole('heading', { name: /^Town Articles$/i })).toBeInTheDocument();
-    expect(screen.getByRole('heading', { name: /^State Amendments$/i })).toBeInTheDocument();
-    expect(screen.getByRole('heading', { name: /^Other Questions$/i })).toBeInTheDocument();
+    expect(screen.queryByRole('heading', { name: /^Democratic Ballot$/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole('heading', { name: /^Republican Ballot$/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole('heading', { name: /^Other Positions$/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole('heading', { name: /^Town Articles$/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole('heading', { name: /^State Amendments$/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole('heading', { name: /^Other Questions$/i })).not.toBeInTheDocument();
 
     const electedContainer = screen.getByRole('heading', { name: /^Elected Positions$/i }).closest('section');
     expect(electedContainer).not.toBeNull();

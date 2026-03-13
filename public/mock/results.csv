@@ -1,32 +1,40 @@
 election,race,ward,candidate,votes,ward_1,ward_2,ward_3
-CITY,Ward Councilor Ward 1,1,Luke T. Skywalker,120,,,
-CITY,Ward Councilor Ward 1,1,Leia M. Organa,95,,,
-CITY,Ward Councilor Ward 2,2,Han R. Solo,98,,,
-CITY,Ward Councilor Ward 2,2,Obi-Wan J. Kenobi,110,,,
-CITY,Ward Councilor Ward 3,3,Darth V. Vader,140,,,
-CITY,City Councilor At Large,ALL,Padme N. Amidala,340,110,120,110
-CITY,City Councilor At Large,ALL,Yoda M. Jedi,325,105,110,110
-CITY,City Councilor At Large,ALL,Chewbacca R. Wookiee,280,90,95,95
-CITY,City Councilor At Large,ALL,Lando C. Calrissian,250,80,85,85
-CITY,City Councilor At Large,ALL,Sheev P. Palpatine,175,55,60,60
-CITY,Library Trustees,ALL,Jabba T. Hutt,410,130,140,140
-CITY,Library Trustees,ALL,Jar Jar B. Binks,395,125,135,135
-CITY,Library Trustees,ALL,C-3PO D. Droid,370,120,125,125
-CITY,Question Number One,ALL,Yes,420,130,145,145
-CITY,Question Number One,ALL,No,300,95,100,105
-CITY,Question Number Two,ALL,Yes,390,125,130,135
-CITY,Question Number Two,ALL,No,325,100,110,115
-CITY,Question Number Three,ALL,Yes,360,110,120,130
-CITY,Question Number Three,ALL,No,350,115,115,120
-SCHOOL,School Board,ALL,R2-D2 A. Astromech,410,,,
-SCHOOL,School Board,ALL,Boba F. Fett,398,,,
-SCHOOL,School Board,ALL,Grogu B. Child,372,,,
-SCHOOL,School Board,ALL,Luke T. Skywalker,280,,,
-SCHOOL,School District Moderator,ALL,Leia M. Organa,420,,,
-SCHOOL,School District Clerk,ALL,Han R. Solo,415,,,
-SCHOOL,School District Treasurer,ALL,Obi-Wan J. Kenobi,405,,,
-SCHOOL,Warrant Number One,ALL,Yes,500,,,
-SCHOOL,Warrant Number One,ALL,No,300,,,
-SCHOOL,Warrant Number Two,ALL,Yes,470,,,
-SCHOOL,Warrant Number Two,ALL,No,315,,,
-
+CITY,Ward 1 Councilor,1,Alex Carter,182,,,
+CITY,Ward 1 Councilor,1,Morgan Lee,159,,,
+CITY,Ward 2 Councilor,2,Priya Shah,171,,,
+CITY,Ward 2 Councilor,2,Daniel Brooks,164,,,
+CITY,Ward 3 Councilor,3,Elena Torres,233,,,
+CITY,City Councilor At-Large,ALL,Ava Bennett,612,215,198,199
+CITY,City Councilor At-Large,ALL,Marcus Green,589,204,190,195
+CITY,City Councilor At-Large,ALL,Nora Kim,551,188,181,182
+CITY,City Councilor At-Large,ALL,Thomas Reed,497,170,160,167
+CITY,City Councilor At-Large,ALL,Olivia Grant,421,142,139,140
+CITY,Library Trustees,ALL,Helen Price,702,240,230,232
+CITY,Library Trustees,ALL,Samuel Ortiz,668,228,219,221
+CITY,Library Trustees,ALL,Denise Harper,641,218,211,212
+CITY,Ward 1 Clerk,1,Jordan Mills,301,,,
+CITY,Ward 2 Moderator,2,Casey Nguyen,287,,,
+CITY,Ward 2 Supervisor of the Voter Checklist,2,Taylor Morgan,251,,,
+CITY,Ward 2 Supervisor of the Voter Checklist,2,Riley Cooper,229,,,
+CITY,Ward 2 Clerk,2,Avery Sullivan,276,,,
+CITY,Ward 3 Clerk,3,Cameron Blake,318,,,
+CITY,Ward 3 Supervisor of the Voter Checklist,3,Peyton Foster,294,,,
+CITY,Charter Amendment #1,ALL,Yes,418,150,133,135
+CITY,Charter Amendment #1,ALL,No,267,93,87,87
+CITY,Question #1,ALL,Yes,455,161,146,148
+CITY,Question #1,ALL,No,238,83,77,78
+CITY,Question #2,ALL,Yes,321,111,104,106
+CITY,Question #2,ALL,No,372,133,118,121
+CITY,Zoning Article #1,ALL,Yes,289,101,94,94
+CITY,Zoning Article #1,ALL,No,401,143,128,130
+SCHOOL,School Board,ALL,Maya Patel,528,182,170,176
+SCHOOL,School Board,ALL,Ethan Ross,501,171,164,166
+SCHOOL,School Board,ALL,Lucia Perez,477,160,158,159
+SCHOOL,School Board,ALL,Henry Walsh,344,116,111,117
+SCHOOL,School District Moderator,ALL,Clara Benson,612,209,201,202
+SCHOOL,School District Clerk,ALL,Noah Sullivan,588,200,193,195
+SCHOOL,School District Treasurer,ALL,Grace Kim,574,196,188,190
+SCHOOL,Warrant #1,ALL,Yes,630,215,205,210
+SCHOOL,Warrant #1,ALL,No,290,99,95,96
+SCHOOL,Warrant #2,ALL,Yes,602,205,196,201
+SCHOOL,Warrant #2,ALL,No,315,108,103,104
