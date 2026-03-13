@@ -35,7 +35,7 @@ export function ReportingSummary({
 
       <div className="mt-5 grid gap-4 sm:grid-cols-3">
         <div className="rounded-xl bg-paper p-4">
-          <p className="text-xs uppercase tracking-wide text-slate">Ballots Counted</p>
+          <p className="text-xs uppercase tracking-wide text-slate">Ballots Cast</p>
           <p className="mt-1 text-2xl font-semibold text-ink">{formatNumber(summary.ballotsCounted)}</p>
         </div>
         <div className="rounded-xl bg-paper p-4">
