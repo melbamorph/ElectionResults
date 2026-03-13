@@ -90,6 +90,9 @@ election,status
 election,ward,ballots_counted,registered_voters
 ```
 
+- Enter one CITY row per ward (`1`, `2`, `3`, etc.) to power the ward-by-ward dropdowns on `Ballots Cast` and `Registered Voters`.
+- A CITY `ALL` row is optional as a fallback total, but when ward rows are present the dashboard sums the ward rows and uses those values for the summary cards.
+
 `race_config.csv`
 
 ```csv

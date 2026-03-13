@@ -33,6 +33,12 @@ export interface TurnoutRow {
   registered_voters: number;
 }
 
+export interface WardTurnoutBreakdownRow {
+  ward: string;
+  ballotsCounted: number;
+  registeredVoters: number;
+}
+
 export interface RaceConfigRow {
   election: ElectionId;
   race: string;
@@ -98,6 +104,7 @@ export interface ReportingSummaryData {
   percentReporting: number;
   ballotsCounted: number;
   registeredVoters: number;
+  turnoutByWard: WardTurnoutBreakdownRow[];
   turnoutPercentage: number;
   isFinal: boolean;
 }

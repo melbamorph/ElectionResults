@@ -1,4 +1,5 @@
-import { ReportingSummaryData, WardStatusRow } from '../types';
+import { useId, useState } from 'react';
+import { ReportingSummaryData, WardStatusRow, WardTurnoutBreakdownRow } from '../types';
 import { formatNumber, formatPercent, titleCase } from '../utils/format';
 import { statusChipClass, statusSymbol } from './statusStyles';
 
@@ -8,6 +9,52 @@ interface ReportingSummaryProps {
   selectedWard: string | null;
   onSelectWard: (ward: string) => void;
   onResetWard: () => void;
+}
+
+interface SummaryMetricCardProps {
+  title: string;
+  valueDisplay: string;
+  breakdownRows: WardTurnoutBreakdownRow[];
+  renderBreakdownValue: (row: WardTurnoutBreakdownRow) => string;
+}
+
+function SummaryMetricCard({ title, valueDisplay, breakdownRows, renderBreakdownValue }: SummaryMetricCardProps) {
+  const [expanded, setExpanded] = useState(false);
+  const breakdownId = useId();
+  const hasBreakdown = breakdownRows.length > 0;
+
+  return (
+    <div className="rounded-xl bg-paper p-4">
+      <p className="text-xs uppercase tracking-wide text-slate">{title}</p>
+      <p className="mt-1 text-2xl font-semibold text-ink">{valueDisplay}</p>
+
+      {hasBreakdown && (
+        <div className="mt-3">
+          <button
+            type="button"
+            aria-expanded={expanded}
+            aria-controls={breakdownId}
+            aria-label={`${expanded ? 'Hide' : 'Show'} ward breakdown for ${title}`}
+            className="text-xs font-semibold text-clay hover:underline"
+            onClick={() => setExpanded((current) => !current)}
+          >
+            {expanded ? 'Hide ward breakdown' : 'Show ward breakdown'}
+          </button>
+
+          {expanded && (
+            <ul id={breakdownId} aria-label={`${title} ward breakdown`} className="mt-2 rounded-md border border-line/70 bg-white p-2 text-xs">
+              {breakdownRows.map((row) => (
+                <li key={`${title}-${row.ward}`} className="flex items-center justify-between py-0.5">
+                  <span className="text-slate">Ward {row.ward}</span>
+                  <span className="font-semibold text-ink">{renderBreakdownValue(row)}</span>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      )}
+    </div>
+  );
 }
 
 export function ReportingSummary({
@@ -34,18 +81,26 @@ export function ReportingSummary({
       </div>
 
       <div className="mt-5 grid gap-4 sm:grid-cols-3">
-        <div className="rounded-xl bg-paper p-4">
-          <p className="text-xs uppercase tracking-wide text-slate">Ballots Cast</p>
-          <p className="mt-1 text-2xl font-semibold text-ink">{formatNumber(summary.ballotsCounted)}</p>
-        </div>
-        <div className="rounded-xl bg-paper p-4">
-          <p className="text-xs uppercase tracking-wide text-slate">Registered Voters</p>
-          <p className="mt-1 text-2xl font-semibold text-ink">{formatNumber(summary.registeredVoters)}</p>
-        </div>
-        <div className="rounded-xl bg-paper p-4">
-          <p className="text-xs uppercase tracking-wide text-slate">Voter Turnout</p>
-          <p className="mt-1 text-2xl font-semibold text-ink">{formatPercent(summary.turnoutPercentage)}</p>
-        </div>
+        <SummaryMetricCard
+          title="Ballots Cast"
+          valueDisplay={formatNumber(summary.ballotsCounted)}
+          breakdownRows={summary.turnoutByWard}
+          renderBreakdownValue={(row) => formatNumber(row.ballotsCounted)}
+        />
+        <SummaryMetricCard
+          title="Registered Voters"
+          valueDisplay={formatNumber(summary.registeredVoters)}
+          breakdownRows={summary.turnoutByWard}
+          renderBreakdownValue={(row) => formatNumber(row.registeredVoters)}
+        />
+        <SummaryMetricCard
+          title="Voter Turnout"
+          valueDisplay={formatPercent(summary.turnoutPercentage)}
+          breakdownRows={summary.turnoutByWard}
+          renderBreakdownValue={(row) =>
+            formatPercent(row.registeredVoters > 0 ? (row.ballotsCounted / row.registeredVoters) * 100 : 0)
+          }
+        />
       </div>
 
       {wards.length > 0 && (

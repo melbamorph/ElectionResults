@@ -108,6 +108,11 @@ function buildData(): DashboardData {
       percentReporting: 33.3,
       ballotsCounted: 1000,
       registeredVoters: 5000,
+      turnoutByWard: [
+        { ward: '1', ballotsCounted: 300, registeredVoters: 1500 },
+        { ward: '2', ballotsCounted: 350, registeredVoters: 1600 },
+        { ward: '3', ballotsCounted: 350, registeredVoters: 1900 },
+      ],
       turnoutPercentage: 20,
       isFinal: false,
     },

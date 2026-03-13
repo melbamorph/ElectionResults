@@ -76,6 +76,11 @@ CITY,Race,ALL,Name,10`;
     expect(data.summary.registeredVoters).toBe(8420);
     expect(data.summary.reportedWards).toBe(2);
     expect(data.summary.totalWards).toBe(3);
+    expect(data.summary.turnoutByWard).toEqual([
+      { ward: '1', ballotsCounted: 745, registeredVoters: 2700 },
+      { ward: '2', ballotsCounted: 690, registeredVoters: 2600 },
+      { ward: '3', ballotsCounted: 699, registeredVoters: 3120 },
+    ]);
 
     const atLarge = data.sections.CITY.races.find((race) => race.race === 'City Councilor At Large');
     expect(atLarge).toBeDefined();

@@ -11,6 +11,7 @@ import {
   ReportingSummaryData,
   ResultRow,
   TurnoutRow,
+  WardTurnoutBreakdownRow,
   WardBreakdownRow,
   WardStatusRow,
 } from '../types';
@@ -353,12 +354,42 @@ function buildRace(
   };
 }
 
-function citySummaryTurnout(turnoutRows: TurnoutRow[]): { ballots: number; registered: number } {
+function buildWardTurnoutBreakdown(turnoutRows: TurnoutRow[]): WardTurnoutBreakdownRow[] {
+  const byWard = new Map<string, WardTurnoutBreakdownRow>();
+
+  for (const row of turnoutRows) {
+    if (row.election !== 'CITY' || row.ward === 'ALL') {
+      continue;
+    }
+
+    const existing = byWard.get(row.ward);
+    if (existing) {
+      existing.ballotsCounted += row.ballots_counted;
+      existing.registeredVoters += row.registered_voters;
+      continue;
+    }
+
+    byWard.set(row.ward, {
+      ward: row.ward,
+      ballotsCounted: row.ballots_counted,
+      registeredVoters: row.registered_voters,
+    });
+  }
+
+  return Array.from(byWard.values()).sort((a, b) => Number.parseInt(a.ward, 10) - Number.parseInt(b.ward, 10));
+}
+
+function citySummaryTurnout(turnoutRows: TurnoutRow[]): {
+  ballots: number;
+  registered: number;
+  turnoutByWard: WardTurnoutBreakdownRow[];
+} {
   const cityRows = turnoutRows.filter((row) => row.election === 'CITY');
   const wardRows = cityRows.filter((row) => row.ward !== 'ALL');
   const useRows = wardRows.length > 0 ? wardRows : cityRows;
+  const turnoutByWard = buildWardTurnoutBreakdown(turnoutRows);
 
-  return useRows.reduce(
+  const totals = useRows.reduce(
     (acc, row) => {
       acc.ballots += row.ballots_counted;
       acc.registered += row.registered_voters;
@@ -366,6 +397,11 @@ function citySummaryTurnout(turnoutRows: TurnoutRow[]): { ballots: number; regis
     },
     { ballots: 0, registered: 0 },
   );
+
+  return {
+    ...totals,
+    turnoutByWard,
+  };
 }
 
 function buildReportingSummary(
@@ -388,6 +424,7 @@ function buildReportingSummary(
     percentReporting,
     ballotsCounted: turnout.ballots,
     registeredVoters: turnout.registered,
+    turnoutByWard: turnout.turnoutByWard,
     turnoutPercentage,
     isFinal: wardStatuses.length > 0 && wardStatuses.every((row) => row.status === 'FINAL'),
   };

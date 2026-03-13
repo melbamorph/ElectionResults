@@ -71,6 +71,11 @@ export const dashboardFixture: DashboardData = {
     percentReporting: 66.7,
     ballotsCounted: 2134,
     registeredVoters: 8420,
+    turnoutByWard: [
+      { ward: '1', ballotsCounted: 745, registeredVoters: 2700 },
+      { ward: '2', ballotsCounted: 690, registeredVoters: 2600 },
+      { ward: '3', ballotsCounted: 699, registeredVoters: 3120 },
+    ],
     turnoutPercentage: 25.3,
     isFinal: false,
   },
